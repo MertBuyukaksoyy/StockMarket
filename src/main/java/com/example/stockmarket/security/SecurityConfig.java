@@ -29,17 +29,17 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/user/authenticateUser")
-                        .defaultSuccessUrl("/user/home")
+                        .defaultSuccessUrl("/home",true)
                         .failureUrl("/error")
                         .permitAll()
-                );
+                )
 
 
-/*
+
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
+                        .logoutUrl("/login")
                         .logoutSuccessUrl("/login?logout")
-                );*/
+                );
 
         return http.build();
     }

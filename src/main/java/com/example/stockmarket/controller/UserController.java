@@ -17,10 +17,10 @@ public class UserController {
         return "login";
     }
 
-    @PostMapping("/create")
+    @PostMapping("/addUser")
     public String createUser(@ModelAttribute UserForm userForm, Model model) {
         userService.createUser(userForm.getUsername(), userForm.getPassword(), userForm.getRole());
-        return "redirect:/create";
+        return "redirect:/home";
     }
 
     @PostMapping("/authenticateUser")
@@ -28,12 +28,15 @@ public class UserController {
         boolean authenticated = userService.authenticateUser(username, password);
 
         if (authenticated) {
-            return "Basarili";
+            return "redirect:/home";
         } else {
-            return "Hatali";
+            return "error";
         }
     }
-
+    @GetMapping("/home")
+    public String showHomePage() {
+        return "home"; // Ana sayfa
+    }
 
     @GetMapping("/error")
     public String showLoginError(){
