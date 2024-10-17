@@ -23,17 +23,17 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Role adminRole = roleRepository.findByRoleName("user")
+        Role adminRole = roleRepository.findByRoleName("admin")
                 .orElseGet(() -> {
                     Role role = new Role();
-                    role.setRoleName("user");
+                    role.setRoleName("admin");
                     return roleRepository.save(role);
                 });
 
-        User adminUser = userRepository.findByUsername("mert")
+        User adminUser = userRepository.findByUsername("john")
                 .orElseGet(() -> {
                     User user = new User();
-                    user.setUsername("mert");
+                    user.setUsername("john");
                     user.setPassword("123");
                     userRepository.save(user);
                     return user;
@@ -51,4 +51,3 @@ public class DatabaseSeeder implements CommandLineRunner {
         }
     }
     }
-

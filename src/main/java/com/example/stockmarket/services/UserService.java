@@ -8,7 +8,6 @@ import com.example.stockmarket.entity.User;
 import com.example.stockmarket.entity.UserRole;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,15 +18,13 @@ public class UserService {
     private UserRoleRepo userRoleRepo;
     @Autowired
     private RoleRepo roleRepo;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
     public User createUser(String userName, String password, String roleName){
 
         User newUser = new User();
         newUser.setUsername(userName);
-        newUser.setPassword(passwordEncoder.encode(password));
+        newUser.setPassword(password);
         Role role = roleRepo.findByRoleName(roleName)
                 .orElseThrow(() -> new IllegalArgumentException("Role not found"));
         userRepo.save(newUser);
@@ -37,6 +34,20 @@ public class UserService {
         userRoleRepo.save(userRole);
 
         return newUser;
+    }public boolean checkPassword(String rawPassword, String storedPassword) {
+        return rawPassword.equals(storedPassword);
     }
+    public boolean authenticateUser(String username, String rawPassword) {
+        User user = userRepo.findByUsername(username).orElse(null);
+        if (user != null) {
+            if (checkPassword(rawPassword, user.getPassword())) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
 
 }

@@ -25,28 +25,23 @@ public class CustomUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Kullanıcıyı veritabanından bul
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı: " + username));
 
-        // Kullanıcının rollerini almak için gerekli işlemler
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        // Kullanıcının rollerini UserRole tablosundan al
         List<UserRole> userRoles = userRoleRepo.findByUser(user);
 
         for (UserRole userRole : userRoles) {
-            // Kullanıcı rolünü authority listesine ekle
             authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.getRole().getRoleName().toUpperCase()));
         }
 
-        // UserDetails nesnesini oluştur
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
-                user.getPassword(),  // Kullanıcının hashlenmiş şifresi
+                user.getPassword(),
                 authorities
         );
     }
+
+
 }
-
-

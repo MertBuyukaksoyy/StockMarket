@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class CompositePK implements Serializable {
-    private int user;  // user_id referansı
-    private int role;  // role_id referansı
+    private int user;
+    private int role;
 
     public CompositePK() {
     }

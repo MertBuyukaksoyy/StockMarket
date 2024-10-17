@@ -3,9 +3,6 @@ package com.example.stockmarket.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,9 +28,9 @@ public class SecurityConfig {
 
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .loginProcessingUrl("/authenticateTheUser")
-                        .defaultSuccessUrl("/create_user", true)
-                        .failureUrl("/admin/login_error")
+                        .loginProcessingUrl("/user/authenticateUser")
+                        .defaultSuccessUrl("/user/home")
+                        .failureUrl("/error")
                         .permitAll()
                 );
 

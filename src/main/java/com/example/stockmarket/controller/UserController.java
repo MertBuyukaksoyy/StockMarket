@@ -17,21 +17,26 @@ public class UserController {
         return "login";
     }
 
-
-    @GetMapping("/create_user")
-    public String createUser(@RequestParam String username, @RequestParam String password, @RequestParam String rolename) {
-        userService.createUser(username, password, rolename);
-        return "create_user";
-    }
-    @PostMapping("/admin/create")
+    @PostMapping("/create")
     public String createUser(@ModelAttribute UserForm userForm, Model model) {
         userService.createUser(userForm.getUsername(), userForm.getPassword(), userForm.getRole());
-        return "redirect:/create_user";
+        return "redirect:/create";
+    }
+
+    @PostMapping("/authenticateUser")
+    public String authenticate(@RequestParam("username") String username, @RequestParam("password") String password) {
+        boolean authenticated = userService.authenticateUser(username, password);
+
+        if (authenticated) {
+            return "Basarili";
+        } else {
+            return "Hatali";
+        }
     }
 
 
     @GetMapping("/error")
     public String showLoginError(){
-        return "login_error";
+        return "error";
     }
 }
