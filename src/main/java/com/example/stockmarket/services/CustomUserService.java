@@ -33,7 +33,7 @@ public class CustomUserService implements UserDetailsService {
         List<UserRole> userRoles = userRoleRepo.findByUser(user);
 
         for (UserRole userRole : userRoles) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.getRole().getRoleName().toUpperCase()));
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.getRole().getRoleName()));
         }
 
         return new org.springframework.security.core.userdetails.User(

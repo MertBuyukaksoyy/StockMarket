@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Yeni Kullanıcı Ekle</title>
+</head>
+<body>
+<h1>Yeni Kullanıcı Ekle</h1>
+<form th:action="@{/addUser}" method="post">
+  <label for="username">Kullanıcı Adı:</label>
+  <input type="text" id="username" name="username" required />
+  <br>
+  <label for="password">Şifre:</label>
+  <input type="password" id="password" name="password" required />
+  <br>
+  <label for="role">Rol:</label>
+  <select id="role" name="role" required>
+    <option th:each="role : ${roles}" th:value="${role.roleName}"
+            th:text="${role.roleName}"></option>
+  </select>
+  <br>
+  <button type="submit">Kullanıcı Ekle</button>
+</form>
+</body>
+</html>

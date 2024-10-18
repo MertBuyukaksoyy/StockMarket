@@ -7,8 +7,12 @@ import com.example.stockmarket.entity.Role;
 import com.example.stockmarket.entity.User;
 import com.example.stockmarket.entity.UserRole;
 import jakarta.transaction.Transactional;
+import org.hibernate.sql.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -19,22 +23,30 @@ public class UserService {
     @Autowired
     private RoleRepo roleRepo;
 
-    @Transactional
-    public User createUser(String userName, String password, String roleName){
+    public void register(String username, String password) {
+        User user = new User(username, password);
+        userRepo.save(user);
+        Optional<Role> userRoleOpt = roleRepo.findByRoleName("user");
+        if (userRoleOpt.isPresent()) {
+            UserRole userRole = new UserRole(user, userRoleOpt.get());
+            userRoleRepo.save(userRole);
+        } else {
+            throw new RuntimeException("user rolü bulunamadı!");
+        }
+    }
 
-        User newUser = new User();
-        newUser.setUsername(userName);
-        newUser.setPassword(password);
-        Role role = roleRepo.findByRoleName(roleName)
-                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
-        userRepo.save(newUser);
-        UserRole userRole = new UserRole();
-        userRole.setUser(newUser);
-        userRole.setRole(role);
-        userRoleRepo.save(userRole);
+    public void addUser(String username, String password, String roleName){
+        User user = new User(username, password);
+        userRepo.save(user);
+        Optional<Role> selectedRole = roleRepo.findByRoleName(roleName);
+        if (selectedRole.isPresent()){
+            UserRole userRole = new UserRole(user, selectedRole.get());
+            userRoleRepo.save(userRole);
+        }
 
-        return newUser;
-    }public boolean checkPassword(String rawPassword, String storedPassword) {
+    }
+
+    public boolean checkPassword(String rawPassword, String storedPassword) {
         return rawPassword.equals(storedPassword);
     }
     public boolean authenticateUser(String username, String rawPassword) {
@@ -49,5 +61,10 @@ public class UserService {
         return false;
     }
 
-
+    public List<User> getAllUsers() {
+        return userRepo.findAll();
+    }
+    public void deleteUser(int id){
+        userRepo.deleteById(id);
+    }
 }
