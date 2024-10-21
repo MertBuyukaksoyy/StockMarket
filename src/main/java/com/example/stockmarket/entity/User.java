@@ -18,6 +18,10 @@ public class User {
     private String password;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL )
     private Set<UserRole> userRoles;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Portfolio> portfolios;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Balances> balances;
     public User(){
 
     }
@@ -61,4 +65,19 @@ public class User {
         this.password = password;
     }
 
+    public Set<Portfolio> getPortfolios() {
+        return portfolios;
+    }
+
+    public void setPortfolios(Set<Portfolio> portfolios) {
+        this.portfolios = portfolios;
+    }
+
+    public Set<Balances> getBalances() {
+        return balances;
+    }
+
+    public void setBalances(Set<Balances> balances) {
+        this.balances = balances;
+    }
 }

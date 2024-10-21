@@ -1,8 +1,10 @@
 package com.example.stockmarket.controller;
 
 import com.example.stockmarket.dao.RoleRepo;
+import com.example.stockmarket.entity.Balances;
 import com.example.stockmarket.entity.Role;
 import com.example.stockmarket.entity.User;
+import com.example.stockmarket.services.BalanceService;
 import com.example.stockmarket.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -21,6 +23,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private RoleRepo roleRepo;
+    @Autowired
+    private BalanceService balanceService;
 
     @GetMapping("/home")
     public String showHomePage(Model model) {
@@ -29,6 +33,9 @@ public class UserController {
         if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             model.addAttribute("username", userDetails.getUsername());
+            User user = userService.findByUsername(userDetails.getUsername());
+            Balances balance = balanceService.getBalance(user);
+            model.addAttribute("balance", balance.getAmount());
         } else {
             model.addAttribute("username", "Anonymous");
         }
@@ -70,7 +77,11 @@ public class UserController {
     @GetMapping("/users")
     public String showUserList(Model model){
         List<User> users = userService.getAllUsers();
+       /* List<Balances> balances = users.stream()
+                .map(user -> balanceService.getBalance(user))
+                .toList();*/
         model.addAttribute("users", users);
+       // model.addAttribute("balances",balances);
         return "users";
     }
     @GetMapping("/deleteUser/{id}")
@@ -85,6 +96,7 @@ public class UserController {
         boolean authenticated = userService.authenticateUser(username, password);
 
         if (authenticated) {
+            SecurityContextHolder.getContext().setAuthentication();
             return "redirect:/home";
         } else {
             model.addAttribute("error", "İnvalid username or password");

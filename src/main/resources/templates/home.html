@@ -13,6 +13,10 @@
 <a href="/login" >Çıkış Yap</a>
 </div>
 <a href="/users">User List</a>
+<p th:if="${balance != null}">
+    Hoş geldiniz, <span th:text="${username}"></span>. Bakiyeniz: <span th:text="${balance}"></span>
+</p>
+
 
 </body>
 </html>

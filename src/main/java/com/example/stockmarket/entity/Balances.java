@@ -12,7 +12,7 @@ public class Balances {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "balance_id")
     private int balanceId;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
     @Column(name = "amount")

@@ -21,6 +21,7 @@
     <td th:text="${user.user_id}"></td>
     <td th:text="${user.username}"></td>
     <td th:text="${user.password}"></td>
+
     <td>
       <ul>
     <li th:each="userRole : ${user.userRoles}" th:text="${userRole.role.roleName}"></li>

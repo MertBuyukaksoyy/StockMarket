@@ -25,11 +25,14 @@ public class UserService {
     private RoleRepo roleRepo;
     @Autowired
     private PortfolioService portfolioService;
+    @Autowired
+    private BalanceService balanceService;
 
     public void register(String username, String password) {
         User user = new User(username, password);
         userRepo.save(user);
         portfolioService.createPortfolio(user,null,0);
+        balanceService.createBalance(user);
         Optional<Role> userRoleOpt = roleRepo.findByRoleName("user");
         if (userRoleOpt.isPresent()) {
             UserRole userRole = new UserRole(user, userRoleOpt.get());
@@ -77,4 +80,8 @@ public class UserService {
         return userRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı: " + username));
     }
+    public User findById(int id) {
+        return userRepo.findById(id).orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı: " + id));
+    }
+
 }

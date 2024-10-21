@@ -24,7 +24,7 @@ public class PortfolioController {
 
 
     @GetMapping("/portfolio")
-    private String showPortfolio(@RequestParam("userId") Integer userId, Model model){
+    private String showPortfolio(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         User currentUser = userService.findByUsername(currentUsername);
