@@ -1,5 +1,6 @@
 package com.example.stockmarket.services;
 
+import com.example.stockmarket.dao.PortfolioRepo;
 import com.example.stockmarket.dao.RoleRepo;
 import com.example.stockmarket.dao.UserRepo;
 import com.example.stockmarket.dao.UserRoleRepo;
@@ -22,10 +23,13 @@ public class UserService {
     private UserRoleRepo userRoleRepo;
     @Autowired
     private RoleRepo roleRepo;
+    @Autowired
+    private PortfolioService portfolioService;
 
     public void register(String username, String password) {
         User user = new User(username, password);
         userRepo.save(user);
+        portfolioService.createPortfolio(user,null,0);
         Optional<Role> userRoleOpt = roleRepo.findByRoleName("user");
         if (userRoleOpt.isPresent()) {
             UserRole userRole = new UserRole(user, userRoleOpt.get());
@@ -38,6 +42,7 @@ public class UserService {
     public void addUser(String username, String password, String roleName){
         User user = new User(username, password);
         userRepo.save(user);
+        portfolioService.createPortfolio(user,null,0);
         Optional<Role> selectedRole = roleRepo.findByRoleName(roleName);
         if (selectedRole.isPresent()){
             UserRole userRole = new UserRole(user, selectedRole.get());
@@ -66,5 +71,10 @@ public class UserService {
     }
     public void deleteUser(int id){
         userRepo.deleteById(id);
+    }
+
+    public User findByUsername(String username) {
+        return userRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı: " + username));
     }
 }

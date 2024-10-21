@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Portfolio</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h1>Hosgeldin, <span th:text="${username}"></span>!</h1>
+<h2>Portföyünüz</h2>
+
+<table>
+  <thead>
+  <tr>
+    <th>Kağıt Adı</th>
+    <th>Miktar</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="portfolio : ${portfolioList}">
+    <td th:text="${portfolio.stock.stockName}"></td>
+    <td th:text="${portfolio.quantity}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<a href="/home">Ana Sayfaya Dön</a>
+</body>
+</html>

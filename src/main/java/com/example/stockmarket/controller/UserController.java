@@ -5,6 +5,9 @@ import com.example.stockmarket.entity.Role;
 import com.example.stockmarket.entity.User;
 import com.example.stockmarket.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +23,19 @@ public class UserController {
     private RoleRepo roleRepo;
 
     @GetMapping("/home")
-    public String showHomePage() {
+    public String showHomePage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            model.addAttribute("username", userDetails.getUsername());
+        } else {
+            model.addAttribute("username", "Anonymous");
+        }
+
         return "home";
     }
+
 
     @GetMapping("/login")
     public String showLoginForm() {

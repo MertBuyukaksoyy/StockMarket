@@ -16,38 +16,20 @@ import org.springframework.security.web.SecurityFilterChain;
 import javax.sql.DataSource;
 import java.util.Optional;
 
+
 @Configuration
 public class SecurityConfig {
 
     @Autowired
     public CustomUserService customUserService;
 
-  /*  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customUserService);
-    }
-    @Bean
-    public JdbcUserDetailsManager userDetailsManager(DataSource dataSource) {
-        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
-        userDetailsManager.setUsersByUsernameQuery(
-                "SELECT username, password, enabled FROM users WHERE username = ?"
-        );
 
-        // Roller (authority) sorgusu
-        userDetailsManager.setAuthoritiesByUsernameQuery(
-                "SELECT u.username, r.role_name " +
-                        "FROM users u " +
-                        "JOIN user_roles ur ON u.user_id = ur.user_id " +
-                        "JOIN roles r ON ur.role_id = r.role_id " +
-                        "WHERE u.username = ?"
-        );
-
-        return userDetailsManager;
-    }*/
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(configurer -> configurer
+                        .requestMatchers("/login", "/register", "/home").permitAll()
                         .anyRequest().permitAll()
                 )
 
@@ -59,12 +41,16 @@ public class SecurityConfig {
                         .permitAll()
                 )
 
-
-
                 .logout(logout -> logout
                         .logoutUrl("/login")
                         .logoutSuccessUrl("/login?logout")
-                );
+                )
+
+                .sessionManagement(session -> session
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(true)
+                )
+                .userDetailsService(customUserService);
 
         return http.build();
     }

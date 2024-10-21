@@ -21,8 +21,7 @@ public class Portfolio {
 
     }
 
-    public Portfolio(int portfolioId, User user, Stock stock, int quantity) {
-        this.portfolioId = portfolioId;
+    public Portfolio(User user, Stock stock, int quantity) {
         this.user = user;
         this.stock = stock;
         this.quantity = quantity;
