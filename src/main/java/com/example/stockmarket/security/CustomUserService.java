@@ -1,11 +1,10 @@
-package com.example.stockmarket.services;
+package com.example.stockmarket.security;
 import com.example.stockmarket.dao.RoleRepo;
 import com.example.stockmarket.dao.UserRepo;
 import com.example.stockmarket.dao.UserRoleRepo;
 import com.example.stockmarket.entity.User;
 import com.example.stockmarket.entity.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

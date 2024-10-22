@@ -19,7 +19,7 @@ public class Stock {
     private BigDecimal currentPrice;
     @Column(name = "stock_active")
     private Boolean stockActive;
-    private Stock(){
+    public Stock(){
 
     }
 

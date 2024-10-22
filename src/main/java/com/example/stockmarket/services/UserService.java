@@ -53,7 +53,6 @@ public class UserService {
         }
 
     }
-
     public boolean checkPassword(String rawPassword, String storedPassword) {
         return rawPassword.equals(storedPassword);
     }

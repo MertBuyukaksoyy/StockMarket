@@ -1,14 +1,9 @@
 package com.example.stockmarket.controller;
 
 import com.example.stockmarket.dao.RoleRepo;
-import com.example.stockmarket.entity.Balances;
-import com.example.stockmarket.entity.Portfolio;
-import com.example.stockmarket.entity.Role;
-import com.example.stockmarket.entity.User;
-import com.example.stockmarket.services.BalanceService;
-import com.example.stockmarket.services.CustomUserService;
-import com.example.stockmarket.services.PortfolioService;
-import com.example.stockmarket.services.UserService;
+import com.example.stockmarket.entity.*;
+import com.example.stockmarket.security.CustomUserService;
+import com.example.stockmarket.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,6 +31,7 @@ public class UserController {
 
     @GetMapping("/home")
     public String showHomePage(Model model) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
@@ -86,11 +82,11 @@ public class UserController {
     @GetMapping("/users")
     public String showUserList(Model model){
         List<User> users = userService.getAllUsers();
-       /* List<Balances> balances = users.stream()
+        List<Balances> balances = users.stream()
                 .map(user -> balanceService.getBalance(user))
-                .toList();*/
+                .toList();
         model.addAttribute("users", users);
-       // model.addAttribute("balances",balances);
+        model.addAttribute("balances",balances);
         return "users";
     }
     @GetMapping("/deleteUser/{id}")

@@ -17,6 +17,25 @@
     Hoş geldiniz, <span th:text="${username}"></span>. Bakiyeniz: <span th:text="${balance}"></span>
 </p>
 
-
+<h1>Hisse Senedi Bilgileri</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Hisse Kodu</th>
+        <th>Hisse Adı</th>
+        <th>Aktif</th>
+        <th>Fiyat</th>
+    </tr>
+    </thead>
+    <tbody>
+    <th:block th:each="stock : ${stocks}">
+        <tr>
+            <td th:text="${stock.stockSymbol}"></td>
+            <td th:text="${stock.stockName}"></td>
+            <td th:text="${stock.stockType}"></td>
+        </tr>
+    </th:block>
+    </tbody>
+</table>
 </body>
 </html>
