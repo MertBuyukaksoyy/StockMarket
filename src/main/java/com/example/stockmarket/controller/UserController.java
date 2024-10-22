@@ -2,11 +2,15 @@ package com.example.stockmarket.controller;
 
 import com.example.stockmarket.dao.RoleRepo;
 import com.example.stockmarket.entity.Balances;
+import com.example.stockmarket.entity.Portfolio;
 import com.example.stockmarket.entity.Role;
 import com.example.stockmarket.entity.User;
 import com.example.stockmarket.services.BalanceService;
+import com.example.stockmarket.services.CustomUserService;
+import com.example.stockmarket.services.PortfolioService;
 import com.example.stockmarket.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +29,10 @@ public class UserController {
     private RoleRepo roleRepo;
     @Autowired
     private BalanceService balanceService;
+    @Autowired
+    private PortfolioService portfolioService;
+    @Autowired
+    private CustomUserService customUserService;
 
     @GetMapping("/home")
     public String showHomePage(Model model) {
@@ -35,6 +43,7 @@ public class UserController {
             model.addAttribute("username", userDetails.getUsername());
             User user = userService.findByUsername(userDetails.getUsername());
             Balances balance = balanceService.getBalance(user);
+            //Portfolio portfolio = portfolioService.getUserPortfolio();
             model.addAttribute("balance", balance.getAmount());
         } else {
             model.addAttribute("username", "Anonymous");
@@ -53,7 +62,7 @@ public class UserController {
     public String showSignInForm(){
         return "register";
     }
-    @PostMapping("register")
+    @PostMapping("/register")
     public String signInUser(@RequestParam ("username") String username
             , @RequestParam("password") String password, Model model){
         userService.register(username, password);
@@ -96,10 +105,13 @@ public class UserController {
         boolean authenticated = userService.authenticateUser(username, password);
 
         if (authenticated) {
-            SecurityContextHolder.getContext().setAuthentication();
+            UserDetails userDetails = customUserService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             return "redirect:/home";
         } else {
-            model.addAttribute("error", "İnvalid username or password");
+            model.addAttribute("error", "Invalid username or password");
             return "login";
         }
     }

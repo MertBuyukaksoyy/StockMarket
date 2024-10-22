@@ -26,15 +26,19 @@ public class PortfolioController {
     @GetMapping("/portfolio")
     private String showPortfolio(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        User currentUser = userService.findByUsername(currentUsername);
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            String username = authentication.getName();
+            User user = userService.findByUsername(username);
 
-        List<Portfolio> portfolioList = portfolioService.getUserPortfolio(currentUser);
-
-        model.addAttribute("portfolioList", portfolioList);
-        model.addAttribute("username", currentUsername);
+            List<Portfolio> portfolio = portfolioService.getUserPortfolio(user);
+            model.addAttribute("portfolio", portfolio);
+            model.addAttribute("username", username);
+        } else {
+            return "redirect:/error";
+        }
 
         return "portfolio";
     }
 
 }
+
