@@ -21,6 +21,8 @@ public class PortfolioController {
     private PortfolioService portfolioService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserController userController;
 
 
     @GetMapping("/portfolio")

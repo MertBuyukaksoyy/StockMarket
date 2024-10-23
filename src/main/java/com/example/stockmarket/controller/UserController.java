@@ -4,7 +4,10 @@ import com.example.stockmarket.dao.RoleRepo;
 import com.example.stockmarket.entity.*;
 import com.example.stockmarket.security.CustomUserService;
 import com.example.stockmarket.services.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +31,8 @@ public class UserController {
     private PortfolioService portfolioService;
     @Autowired
     private CustomUserService customUserService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @GetMapping("/home")
     public String showHomePage(Model model) {
@@ -82,11 +87,11 @@ public class UserController {
     @GetMapping("/users")
     public String showUserList(Model model){
         List<User> users = userService.getAllUsers();
-        List<Balances> balances = users.stream()
+       /* List<Balances> balances = users.stream()
                 .map(user -> balanceService.getBalance(user))
-                .toList();
+                .toList();*/
         model.addAttribute("users", users);
-        model.addAttribute("balances",balances);
+       // model.addAttribute("balances",balances);
         return "users";
     }
     @GetMapping("/deleteUser/{id}")
@@ -97,14 +102,18 @@ public class UserController {
 
 
     @PostMapping("/authenticateUser")
-    public String authenticate(@RequestParam("username") String username, @RequestParam("password") String password, Model model) {
+    public String authenticate(@RequestParam("username") String username, @RequestParam("password") String password,
+                               HttpServletRequest request, Model model) {
         boolean authenticated = userService.authenticateUser(username, password);
 
         if (authenticated) {
             UserDetails userDetails = customUserService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            HttpSession session = request.getSession(true);
+            session.setAttribute("SPRING_SECURITY_CONTEXT", authentication);
             return "redirect:/home";
         } else {
             model.addAttribute("error", "Invalid username or password");

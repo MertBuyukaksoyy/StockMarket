@@ -46,6 +46,7 @@ public class UserService {
         User user = new User(username, password);
         userRepo.save(user);
         portfolioService.createPortfolio(user,null,0);
+        balanceService.createBalance(user);
         Optional<Role> selectedRole = roleRepo.findByRoleName(roleName);
         if (selectedRole.isPresent()){
             UserRole userRole = new UserRole(user, selectedRole.get());

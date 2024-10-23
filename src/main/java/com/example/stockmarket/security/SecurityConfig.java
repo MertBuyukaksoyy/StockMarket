@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 
@@ -21,6 +23,14 @@ public class SecurityConfig {
     public SecurityConfig(CustomUserService customUserService) {
         this.customUserService = customUserService;
     }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -31,15 +41,15 @@ public class SecurityConfig {
 
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .loginProcessingUrl("/user/authenticateUser")
+                        .loginProcessingUrl("/authenticateUser")
                         .defaultSuccessUrl("/home",true)
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )
 
                 .logout(logout -> logout
-                        .logoutUrl("/login")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutUrl("/home")
+                        .logoutSuccessUrl("/home?logout")
                 )
 
                 .sessionManagement(session -> session
@@ -52,10 +62,5 @@ public class SecurityConfig {
         return http.build();
     }
 
- /*   @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception{
-        return AuthenticationConfiguration.getAuthenticationManager();
-    }*/
 }
 
