@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Update Balance</title>
+</head>
+<body>
+<h2>Update Balance for User: <span th:text="${balance.user.username}"></span></h2>
+
+<form th:action="@{/updateBalance}" method="post">
+  <input type="hidden" name="userId" th:value="${balance.user.user_id}"/>
+  <label for="amount">New Balance: </label>
+  <input type="number" name="newAmount" id="amount" th:value="${balance.amount}" required/><br><br>
+  <button type="submit">Update</button>
+</form>
+
+<a th:href="@{/users}">Back to Users List</a>
+</body>
+</html>

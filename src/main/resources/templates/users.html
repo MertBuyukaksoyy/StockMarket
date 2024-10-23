@@ -7,6 +7,7 @@
 <body>
 <h3>User List</h3>
 <a th:href="@{/addUser}">Add User</a>
+<a href="/home">Home Page</a>
 <table>
   <thead>
   <tr>
@@ -14,6 +15,7 @@
     <th>Username</th>
     <th>Password</th>
     <th>Role</th>
+    <th>Balance</th>
   </tr>
   </thead>
   <tbody>
@@ -26,6 +28,12 @@
       <ul>
     <li th:each="userRole : ${user.userRoles}" th:text="${userRole.role.roleName}"></li>
   </ul>>
+    </td>
+    <td th:text="${user.balances[0].amount}">0</td>
+    <td>
+      <a th:href="@{/updateBalance/{userId}(userId=${user.user_id})}">
+        Update Balance
+      </a>
     </td>
     <td>
       <a th:href="@{/deleteUser/{id}(id=${user.user_id})}"

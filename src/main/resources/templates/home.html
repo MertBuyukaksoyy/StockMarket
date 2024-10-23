@@ -10,8 +10,9 @@
 <a href="/portfolio">Portfolyo</a>
 <div>
 <p>Welcome, <span th:text="${username}"></span></p>
-<a href="/login" >Çıkış Yap</a>
-</div>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Çıkış Yap</button>
+    </form></div>
 <a href="/users">User List</a>
 <p th:if="${balance != null}">
     Hoş geldiniz, <span th:text="${username}"></span>. Bakiyeniz: <span th:text="${balance}"></span>

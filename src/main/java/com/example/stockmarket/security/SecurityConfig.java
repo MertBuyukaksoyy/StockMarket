@@ -36,6 +36,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(configurer -> configurer
+                        .requestMatchers("/users/**").hasRole("admin")
                         .anyRequest().permitAll()
                 )
 
@@ -48,8 +49,9 @@ public class SecurityConfig {
                 )
 
                 .logout(logout -> logout
-                        .logoutUrl("/home")
-                        .logoutSuccessUrl("/home?logout")
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/home")
+                        .permitAll()
                 )
 
                 .sessionManagement(session -> session

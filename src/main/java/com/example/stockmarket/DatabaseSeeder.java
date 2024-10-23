@@ -1,4 +1,4 @@
-package com.example.stockmarket;
+/*package com.example.stockmarket;
 
 import com.example.stockmarket.dao.RoleRepo;
 import com.example.stockmarket.dao.UserRepo;
@@ -50,4 +50,4 @@ public class DatabaseSeeder implements CommandLineRunner {
             System.out.println("Admin kullanıcı zaten admin rolüne sahip.");
         }
     }
-    }
+    }*/
