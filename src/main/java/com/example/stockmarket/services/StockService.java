@@ -12,16 +12,14 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-
 
 @Service
 public class StockService {
     @Autowired
     private StockRepo stockRepo;
 
-    @Scheduled(fixedRate = 5000)
+  //  @Scheduled(fixedRate = 5000)
     public void fetchStocks(){
         try {
             Document doc = Jsoup.connect("https://bigpara.hurriyet.com.tr/borsa/canli-borsa/")
@@ -52,7 +50,9 @@ public class StockService {
                 stock.setStockSymbol(stockSymbol);
                 stock.setCurrentPrice(stockPrice);
                 stock.setStockActive(true);
-                stockRepo.save(stock);}
+                stock.setStockQuantity(10000);
+                stockRepo.save(stock);
+                }
 
                // System.out.println( "İsim: "  + stockName + "Sembol:" + stockSymbol + ", Fiyat: " + stockPrice);
                 }
@@ -65,5 +65,12 @@ public class StockService {
 
     public List<Stock> getAllStocks() {
         return stockRepo.findAll();
+    }
+    public Stock findById(int id){
+        return stockRepo.findById(id).orElseThrow(() -> new RuntimeException("Hisse bulunamadı: " + id));
+    }
+
+    public Stock save(Stock stock) {
+        return stockRepo.save(stock);
     }
 }

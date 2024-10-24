@@ -13,22 +13,25 @@ public class Stock {
     private int stockId;
     @Column(name = "stock_name")
     private String stockName;
-    @Column(name = "stock_symbol")
+    @Column(name = "stock_symbol", unique = true)
     private String stockSymbol;
     @Column(name = "current_price")
     private BigDecimal currentPrice;
     @Column(name = "stock_active")
     private Boolean stockActive;
+    @Column(name = "stock_quantity")
+    private int stockQuantity;
     public Stock(){
 
     }
 
-    public Stock(int stockId, Boolean stockActive, String stockName, BigDecimal currentPrice, String stockSymbol) {
+    public Stock(int stockId, Boolean stockActive, String stockName, BigDecimal currentPrice, String stockSymbol, int stockQuantity) {
         this.stockId = stockId;
         this.stockActive = stockActive;
         this.stockName = stockName;
         this.currentPrice = currentPrice;
         this.stockSymbol = stockSymbol;
+        this.stockQuantity = stockQuantity;
     }
 
     public int getStockId() {
@@ -69,5 +72,13 @@ public class Stock {
 
     public void setStockActive(Boolean stockActive) {
         this.stockActive = stockActive;
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 }
