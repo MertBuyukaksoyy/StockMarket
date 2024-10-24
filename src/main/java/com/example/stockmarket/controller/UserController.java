@@ -33,6 +33,8 @@ public class UserController {
     private CustomUserService customUserService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private StockService stockService;
 
     @GetMapping("/home")
     public String showHomePage(Model model) {
@@ -49,6 +51,9 @@ public class UserController {
         } else {
             model.addAttribute("username", "Anonymous");
         }
+        List<Stock> stocks = stockService.getAllStocks();
+        model.addAttribute("stocks", stocks);
+
 
         return "home";
     }
@@ -87,11 +92,7 @@ public class UserController {
     @GetMapping("/users")
     public String showUserList(Model model){
         List<User> users = userService.getAllUsers();
-       /* List<Balances> balances = users.stream()
-                .map(user -> balanceService.getBalance(user))
-                .toList();*/
         model.addAttribute("users", users);
-       // model.addAttribute("balances",balances);
         return "users";
     }
     @GetMapping("/deleteUser/{id}")

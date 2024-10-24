@@ -24,8 +24,9 @@
     <tr>
         <th>Hisse Kodu</th>
         <th>Hisse Adı</th>
-        <th>Aktif</th>
         <th>Fiyat</th>
+        <th>Aktif</th>
+
     </tr>
     </thead>
     <tbody>
@@ -33,8 +34,8 @@
         <tr>
             <td th:text="${stock.stockSymbol}"></td>
             <td th:text="${stock.stockName}"></td>
-            <td th:text="${stock.stockType}"></td>
-        </tr>
+            <td th:text="${stock.currentPrice}"></td>
+            <td th:text="${stock.stockActive ? 'Aktif' : 'Pasif'}"></td>        </tr>
     </th:block>
     </tbody>
 </table>
