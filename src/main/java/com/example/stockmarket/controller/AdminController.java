@@ -8,6 +8,7 @@ import com.example.stockmarket.services.StockService;
 import com.example.stockmarket.services.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,21 +44,22 @@ public class AdminController {
             return "redirect:/users";
         }
 
-    @GetMapping("/updateStockStatus/{stockId}")
-    public String showUpdateStockStatusForm(@PathVariable int stockId, Model model) {
-        Stock stock = stockService.findById(stockId);
-        model.addAttribute("stock", stock);
-        return "updateStockStatus";
-    }
+        @GetMapping("/updateStockStatus/{stockId}")
+        public String showUpdateStockStatusForm(@PathVariable int stockId, Model model) {
+            Stock stock = stockService.findById(stockId);
+            model.addAttribute("stock", stock);
+            return "updateStockForm";
+        }
 
-    @PostMapping("/updateStockStatus")
-    @Transactional
-    public String updateStockStatus(@RequestParam Integer stockId, @RequestParam Boolean isActive) {
-        Stock stock = stockService.findById(stockId);
-        stock.setStockActive(isActive);
-        stockService.save(stock);
-        return "redirect:/home";
-    }
+        @PostMapping("/updateStockStatus")
+        @Transactional
+        public String updateStockStatus(@RequestParam Integer stockId, @RequestParam Boolean isActive, @RequestParam Integer quantity) {
+            Stock stock = stockService.findById(stockId);
+            stock.setStockActive(isActive);
+            stock.setStockQuantity(quantity);
+            stockService.save(stock);
+            return "redirect:/home";
+        }
 
 
 }
