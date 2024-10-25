@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Hisse Gecmisi</title>
+</head>
+<body>
+<h1 th:text="${stock.stockName} + ' Hisse Geçmişi'"></h1>
+<table>
+  <thead>
+  <tr>
+    <th>Tarih</th>
+    <th>Fiyat</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="entry : ${history}">
+    <td th:text="${entry.timeStamp}"></td>
+    <td th:text="${entry.price}"></td>
+  </tr>
+  </tbody>
+
+</table>
+<a href="/home">Geri Dön</a>
+</body>
+</html>

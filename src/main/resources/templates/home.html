@@ -41,7 +41,10 @@
             <td th:text="${stock.currentPrice}"></td>
             <td th:text="${stock.stockQuantity}"></td>
             <td th:text="${stock.stockActive ? 'Aktif' : 'Pasif'}"></td>
-            <div th:if="${#authorization.expression('hasRole(''admin'')')}">
+            <td>
+                <a th:href="@{/history/{id}(id=${stock.stockId})}">Fiyat Geçmişi</a>
+            </td>
+                <div th:if="${#authorization.expression('hasRole(''admin'')')}">
             <td>
                 <a th:href="@{/updateStockStatus/{stockId}(stockId=${stock.stockId})}">Düzenle</a>
             </td>
