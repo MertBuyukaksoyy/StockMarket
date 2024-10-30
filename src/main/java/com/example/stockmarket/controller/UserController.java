@@ -35,6 +35,8 @@ public class UserController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private StockService stockService;
+    @Autowired
+    private TransactionService transactionService;
 
     @GetMapping("/home")
     public String showHomePage(Model model) {
@@ -126,4 +128,37 @@ public class UserController {
     public String showLoginError(){
         return "error";
     }
+
+    @PostMapping("/buy/{id}")
+    public String buyStock(@RequestParam int stockId, @RequestParam int quantity, @RequestParam String userName, Model model){
+        User user = userService.findByUsername(userName);
+        Stock stock = stockService.findById(stockId);
+        transactionService.buyStock(user, stock, quantity);
+        String message;
+        try {
+            transactionService.buyStock(user, stock, quantity);
+            message = "Hisse başarıyla satın alındı!";
+        } catch (Exception e) {
+            message = "Bir hata oluştu: " + e.getMessage();
+        }
+
+        model.addAttribute("message", message);
+        return "purchaseResult";
+    }
+    @PostMapping("/sell/{id}")
+    public String sellStock(@RequestParam int stockId, @RequestParam int quantity, @RequestParam String userName, Model model){
+        User user = userService.findByUsername(userName);
+        Stock stock = stockService.findById(stockId);
+        transactionService.sellStock(user, stock, quantity);
+        String message;
+        try {
+            transactionService.sellStock(user, stock, quantity);
+            message = "Hisse başarıyla satıldı!";
+        } catch (Exception e) {
+            message = "Bir hata oluştu: " + e.getMessage();
+        }
+
+        model.addAttribute("message", message);
+        return "saleResult";    }
+
 }

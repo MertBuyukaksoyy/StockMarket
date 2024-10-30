@@ -41,7 +41,6 @@ public class StockService {
                 String[] parts = stockData.split("-");
                 String stockSymbol = parts[0];
                 String stockName = String.join("-", java.util.Arrays.copyOfRange(parts,1, parts.length));
-              //  stockName = stockName.substring(stockName.lastIndexOf("/") + 1, stockName.lastIndexOf("-detay"));
                 String stockPriceStr = container.select("li[id^=h_td_fiyat_id_]").text();
                 BigDecimal stockPrice = new BigDecimal(stockPriceStr.replace(".", "").replace(",", "."));
 

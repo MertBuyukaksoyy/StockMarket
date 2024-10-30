@@ -5,7 +5,7 @@
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<h1>Hosgeldin, <span th:text="${username}"></span>!</h1>
+<h1>Hoşgeldin, <span th:text="${username}"></span>!</h1>
 <h2>Portföyünüz</h2>
 
 <table>
@@ -13,16 +13,28 @@
   <tr>
     <th>Kağıt Adı</th>
     <th>Miktar</th>
+    <th>İşlemler</th>
   </tr>
   </thead>
   <tbody>
   <tr th:each="portfolio : ${portfolioList}">
-    <td th:text="${portfolio.stock.stockName}"></td>
+    <td th:text="${portfolio.stock != null ? portfolio.stock.stockName : 'Hisse Adı Bulunamadı'}"></td>
     <td th:text="${portfolio.quantity}"></td>
+    <td>
+      <div th:if="${portfolio.stock != null}">
+        <form th:action="@{/sell(stockId=${portfolio.stock.stockId})}" method="POST" style="display:inline;">
+          <input type="number" name="quantity" placeholder="Adet" required>
+          <input type="hidden" name="userName" th:value="${username}">
+          <button type="submit">Sat</button>
+        </form>
+      </div>
+      <div th:if="${portfolio.stock == null}">
+        <span>Satış yapılamaz</span>
+      </div>
+    </td>
   </tr>
   </tbody>
 </table>
-
 <a href="/home">Ana Sayfaya Dön</a>
 </body>
 </html>

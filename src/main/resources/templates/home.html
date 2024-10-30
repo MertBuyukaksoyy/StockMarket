@@ -31,6 +31,7 @@
         <th>Fiyat</th>
         <th>Adet</th>
         <th>Aktif</th>
+        <th>İşlemler</th>
     </tr>
     </thead>
     <tbody>
@@ -43,6 +44,14 @@
             <td th:text="${stock.stockActive ? 'Aktif' : 'Pasif'}"></td>
             <td>
                 <a th:href="@{/history/{id}(id=${stock.stockId})}">Fiyat Geçmişi</a>
+            </td>
+            <td>
+            <form th:action="@{/buy/{id}(id=${stock.stockId})}" method="POST" style="display:inline;">
+                <input type="hidden" name="stockId" th:value="${stock.stockId}" />
+                <input type="number" name="quantity" placeholder="Adet" required>
+                <input type="hidden" name="userName" th:value="${username}">
+                <button type="submit">Satın Al</button>
+            </form>
             </td>
                 <div th:if="${#authorization.expression('hasRole(''admin'')')}">
             <td>

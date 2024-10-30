@@ -10,8 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -32,8 +30,8 @@ public class PortfolioController {
             String username = authentication.getName();
             User user = userService.findByUsername(username);
 
-            List<Portfolio> portfolio = portfolioService.getUserPortfolio(user);
-            model.addAttribute("portfolio", portfolio);
+            List<Portfolio> portfolioList = portfolioService.getUserPortfolio(user);
+            model.addAttribute("portfolioList", portfolioList);
             model.addAttribute("username", username);
         } else {
             return "redirect:/error";

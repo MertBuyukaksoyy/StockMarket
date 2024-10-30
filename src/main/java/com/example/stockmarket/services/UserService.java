@@ -1,14 +1,11 @@
 package com.example.stockmarket.services;
 
-import com.example.stockmarket.dao.PortfolioRepo;
 import com.example.stockmarket.dao.RoleRepo;
 import com.example.stockmarket.dao.UserRepo;
 import com.example.stockmarket.dao.UserRoleRepo;
 import com.example.stockmarket.entity.Role;
 import com.example.stockmarket.entity.User;
 import com.example.stockmarket.entity.UserRole;
-import jakarta.transaction.Transactional;
-import org.hibernate.sql.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

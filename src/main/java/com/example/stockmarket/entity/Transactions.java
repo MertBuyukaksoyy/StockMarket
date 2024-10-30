@@ -21,7 +21,6 @@ public class Transactions {
     private int quantity;
     @Column(name = "price_per_unit")
     private BigDecimal pricePerUnit;
-    //transaction type
     @Column(name = "transaction_type")
     private Boolean transactionType;
     @Column(name = "comission")
