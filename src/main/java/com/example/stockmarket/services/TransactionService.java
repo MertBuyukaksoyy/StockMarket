@@ -4,6 +4,7 @@ import com.example.stockmarket.dao.TransactionRepo;
 import com.example.stockmarket.entity.Transactions;
 import com.example.stockmarket.entity.User;
 import com.example.stockmarket.entity.Stock;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ public class TransactionService {
     @Autowired
     private PortfolioService portfolioService;
 
+    @Transactional
     public void buyStock(User user, Stock stock, int quantity) {
         BigDecimal pricePerUnit = stock.getCurrentPrice();
         BigDecimal comission = BigDecimal.ZERO;
@@ -35,13 +37,14 @@ public class TransactionService {
         }
     }
 
+    @Transactional
     public void sellStock(User user, Stock stock, int quantity) {
         BigDecimal pricePerUnit = stock.getCurrentPrice();
         BigDecimal comission = BigDecimal.ZERO;
         BigDecimal totalProceeds = pricePerUnit.multiply(new BigDecimal(quantity)).subtract(comission);
 
         portfolioService.getUserPortfolio(user).stream()
-                .filter(p -> p.getStock().equals(stock) && p.getQuantity() >= quantity)
+                .filter(p -> p.getStock() != null && p.getStock().equals(stock) && p.getQuantity() >= quantity)
                 .findFirst()
                 .ifPresentOrElse(portfolio -> {
                     Transactions transaction = new Transactions(0, user, stock, totalProceeds, comission, false, pricePerUnit, quantity);
@@ -51,7 +54,8 @@ public class TransactionService {
 
                     portfolioService.updatePortfolio(user, stock, -quantity);
                 }, () -> {
-                    throw new RuntimeException("Yetersiz hisse miktarı.");
+                    throw new RuntimeException("Yetersiz hisse miktarı veya geçersiz hisse.");
                 });
+
     }
 }

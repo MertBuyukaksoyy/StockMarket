@@ -22,7 +22,8 @@
     <td th:text="${portfolio.quantity}"></td>
     <td>
       <div th:if="${portfolio.stock != null}">
-        <form th:action="@{/sell(stockId=${portfolio.stock.stockId})}" method="POST" style="display:inline;">
+        <form th:action="@{/sell/{id}(id=${portfolio.stock.stockId})}" method="POST" style="display:inline;">
+          <input type="hidden" name="stockId" th:value="${portfolio.stock.stockId}" />
           <input type="number" name="quantity" placeholder="Adet" required>
           <input type="hidden" name="userName" th:value="${username}">
           <button type="submit">Sat</button>
