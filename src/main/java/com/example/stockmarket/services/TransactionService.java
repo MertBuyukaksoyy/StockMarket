@@ -14,12 +14,12 @@ public class TransactionService {
 
     @Autowired
     private TransactionRepo transactionRepo;
-
     @Autowired
     private BalanceService balanceService;
-
     @Autowired
     private PortfolioService portfolioService;
+    @Autowired
+    private StockService stockService;
 
     @Transactional
     public void buyStock(User user, Stock stock, int quantity) {
@@ -32,6 +32,7 @@ public class TransactionService {
             transactionRepo.save(transaction);
             balanceService.updateBalance(user, balanceService.getBalance(user).getAmount().subtract(totalCost));
             portfolioService.updatePortfolio(user, stock, quantity);
+            stockService.updateStockQuantity(stock, -quantity);
         } else {
             throw new RuntimeException("Yetersiz bakiye.");
         }
@@ -49,10 +50,9 @@ public class TransactionService {
                 .ifPresentOrElse(portfolio -> {
                     Transactions transaction = new Transactions(0, user, stock, totalProceeds, comission, false, pricePerUnit, quantity);
                     transactionRepo.save(transaction);
-
                     balanceService.updateBalance(user, balanceService.getBalance(user).getAmount().add(totalProceeds));
-
                     portfolioService.updatePortfolio(user, stock, -quantity);
+                    stockService.updateStockQuantity(stock, quantity);
                 }, () -> {
                     throw new RuntimeException("Yetersiz hisse miktarı veya geçersiz hisse.");
                 });

@@ -92,4 +92,9 @@ public class StockService {
         existingStock.setStockName(stockName);
         stockRepo.save(existingStock);
     }
+
+    public void updateStockQuantity(Stock stock, int newQuantity) {
+        stock.setStockQuantity(stock.getStockQuantity() + newQuantity);
+        stockRepo.save(stock);
+    }
 }
