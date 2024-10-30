@@ -11,14 +11,18 @@
 <table>
   <thead>
   <tr>
-    <th>Kağıt Adı</th>
+    <th>Hisse Kodu</th>
+    <th>Hisse Adı</th>
+    <th>Anlık Fiyat</th>
     <th>Miktar</th>
     <th>İşlemler</th>
   </tr>
   </thead>
   <tbody>
   <tr th:each="portfolio : ${portfolioList}">
+    <td th:text="${portfolio.stock != null ? portfolio.stock.stockSymbol: 'Hisse kodu bulunamadı'}"></td>
     <td th:text="${portfolio.stock != null ? portfolio.stock.stockName : 'Hisse Adı Bulunamadı'}"></td>
+    <td th:text="${portfolio.stock != null ? portfolio.stock.currentPrice : 'Hisse Fiyatı Bulunamadı'}"></td>
     <td th:text="${portfolio.quantity}"></td>
     <td>
       <div th:if="${portfolio.stock != null}">

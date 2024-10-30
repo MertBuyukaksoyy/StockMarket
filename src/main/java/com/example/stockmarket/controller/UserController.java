@@ -133,7 +133,6 @@ public class UserController {
     public String buyStock(@RequestParam int stockId, @RequestParam int quantity, @RequestParam String userName, Model model){
         User user = userService.findByUsername(userName);
         Stock stock = stockService.findById(stockId);
-        transactionService.buyStock(user, stock, quantity);
         String message;
         try {
             transactionService.buyStock(user, stock, quantity);
@@ -149,7 +148,6 @@ public class UserController {
     public String sellStock(@RequestParam int stockId, @RequestParam int quantity, @RequestParam String userName, Model model){
         User user = userService.findByUsername(userName);
         Stock stock = stockService.findById(stockId);
-        transactionService.sellStock(user, stock, quantity);
         String message;
         try {
             transactionService.sellStock(user, stock, quantity);

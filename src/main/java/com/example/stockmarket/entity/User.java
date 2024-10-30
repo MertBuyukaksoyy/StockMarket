@@ -18,10 +18,12 @@ public class User {
     private String password;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL )
     private Set<UserRole> userRoles;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
     private Set<Portfolio> portfolios;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Balances> balances;
+    @OneToMany(mappedBy = "user", cascade =  CascadeType.ALL, orphanRemoval = true)
+    private Set<Transactions> transactions;
     public User(){
 
     }
@@ -80,4 +82,5 @@ public class User {
     public void setBalances(Set<Balances> balances) {
         this.balances = balances;
     }
+
 }

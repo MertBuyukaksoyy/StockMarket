@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class PortfolioController {
@@ -30,7 +31,8 @@ public class PortfolioController {
             String username = authentication.getName();
             User user = userService.findByUsername(username);
 
-            List<Portfolio> portfolioList = portfolioService.getUserPortfolio(user);
+            List<Portfolio> portfolioList = portfolioService.getUserPortfolio(user)
+                    .stream().filter(portfolio -> !portfolio.isDeleted()).collect(Collectors.toList());
             model.addAttribute("portfolioList", portfolioList);
             model.addAttribute("username", username);
         } else {

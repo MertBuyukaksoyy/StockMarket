@@ -17,6 +17,8 @@ public class Portfolio {
     private Stock stock;
     @Column(name = "quantity")
     private int quantity;
+    @Column(name = "deleted")
+    private boolean deleted = false;
     private Portfolio(){
 
     }
@@ -57,5 +59,13 @@ public class Portfolio {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }
