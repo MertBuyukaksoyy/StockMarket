@@ -5,6 +5,7 @@ import com.example.stockmarket.entity.Stock;
 import com.example.stockmarket.entity.User;
 import com.example.stockmarket.services.BalanceService;
 import com.example.stockmarket.services.StockService;
+import com.example.stockmarket.services.TransactionService;
 import com.example.stockmarket.services.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class AdminController {
         private UserService userService;
         @Autowired
         private StockService stockService;
+        @Autowired
+        private TransactionService transactionService;
 
         @GetMapping("/updateBalance/{userId}")
         public String showUpdateBalanceForm(@PathVariable int userId, Model model) {
@@ -58,6 +61,19 @@ public class AdminController {
             stock.setStockQuantity(quantity);
             stockService.save(stock);
             return "redirect:/home";
+        }
+
+        @GetMapping("/updateComissionRate")
+        public String showUpdateComission(Model model){
+            model.addAttribute("comissionRate", transactionService.getComissionRate());
+            return "updateComissionRate";
+        }
+
+        @PostMapping("/updateComissionRate")
+        @Transactional
+        public String updateComission(@RequestParam BigDecimal newRate){
+            transactionService.setCommissionRate(newRate);
+            return "redirect:/users";
         }
 
 

@@ -16,16 +16,6 @@ public class PortfolioService {
     @Autowired
     private PortfolioRepo portfolioRepo;
 
-    public Portfolio findOrCreatePortfolio(User user, Stock stock, int quantity) {
-        Portfolio portfolio = portfolioRepo.findByUserAndStock(user, stock).orElse(null);
-        if (portfolio == null) {
-            portfolio = new Portfolio(user, stock, quantity);
-        } else {
-            portfolio.setQuantity(portfolio.getQuantity() + quantity);
-        }
-        return portfolioRepo.save(portfolio);
-    }
-
     public List<Portfolio> getUserPortfolio(User user) {
         return portfolioRepo.findByUser(user);
     }

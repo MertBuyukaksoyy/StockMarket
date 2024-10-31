@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Komisyon Oranı Güncelle</title>
+</head>
+<body>
+<h3>Komisyon Oranını Güncelle</h3>
+<form th:action="@{/updateComissionRate}" method="POST">
+  <label for="commissionRate">Yeni Komisyon Oranı (% olarak):</label>
+  <input type="number" step="0.01" id="commissionRate" name="newRate" th:value="${commissionRate}"/>
+  <button type="submit">Güncelle</button>
+</form>
+<a href="/users">Geri Dön</a>
+</body>
+</html>
