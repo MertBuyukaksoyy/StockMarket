@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>İşlem Geçmişi</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h1>Hoşgeldin, <span th:text="${username}"></span>!</h1>
+<h2>İşlem Geçmişiniz</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>İşlem ID</th>
+        <th>Hisse Kodu</th>
+        <th>Hisse Adı</th>
+        <th>Miktar</th>
+        <th>İşlem Tutarı</th>
+        <th>Komisyon</th>
+        <th>İşlem Tarihi</th>
+        <th>İşlem Türü</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="transaction : ${transactionsList}">
+        <td th:text="${transaction.transactionId}"></td>
+        <td th:text="${transaction.stock != null ? transaction.stock.stockSymbol : 'Hisse kodu bulunamadı'}"></td>
+        <td th:text="${transaction.stock != null ? transaction.stock.stockName : 'Hisse Adı Bulunamadı'}"></td>
+        <td th:text="${transaction.quantity}"></td>
+        <td th:text="${transaction.amount}"></td>
+        <td th:text="${transaction.comission}"></td>
+        <td th:text="${transaction.timeStamp}"></td>
+        <td th:text="${transaction.transactionType ? 'Alım' : 'Satım'}"></td>
+    </tr>
+    </tbody>
+</table>
+<a href="/portfolio">Portföyü Göster</a>
+<a href="/home">Ana Sayfaya Dön</a>
+</body>
+</html>

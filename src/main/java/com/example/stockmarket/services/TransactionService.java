@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,7 +36,7 @@ public class TransactionService {
 
 
         if (balanceService.getBalance(user).getAmount().compareTo(finalCost) >= 0) {
-            Transactions transaction = new Transactions(0, user, stock, finalCost, comission, true, pricePerUnit, quantity);
+            Transactions transaction = new Transactions(0, user, stock, finalCost, comission, true, pricePerUnit, quantity, LocalDateTime.now());
             transactionRepo.save(transaction);
             balanceService.updateBalance(user, balanceService.getBalance(user).getAmount().subtract(finalCost));
             portfolioService.updatePortfolio(user, stock, quantity);
@@ -58,7 +60,7 @@ public class TransactionService {
         BigDecimal totalProceeds = pricePerUnit.multiply(BigDecimal.valueOf(quantity));
         BigDecimal comission = totalProceeds.multiply(commissionRate);
         BigDecimal finalProceeds = totalProceeds.subtract(comission);
-        Transactions transaction = new Transactions(0, user, stock, finalProceeds, comission, false, pricePerUnit, quantity);
+        Transactions transaction = new Transactions(0, user, stock, finalProceeds, comission, false, pricePerUnit, quantity, LocalDateTime.now());
 
         transactionRepo.save(transaction);
         balanceService.updateBalance(user, balanceService.getBalance(user).getAmount().add(finalProceeds));
@@ -74,4 +76,7 @@ public class TransactionService {
     }
 
 
+    public List<Transactions> getUserTransactions(User user) {
+        return  transactionRepo.findByUser(user);
+    }
 }

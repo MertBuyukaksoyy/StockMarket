@@ -3,6 +3,7 @@ package com.example.stockmarket.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transactions")
@@ -27,11 +28,13 @@ public class Transactions {
     private BigDecimal comission;
     @Column(name = "amount")
     private BigDecimal amount;
+    @Column(name = "time_stamp")
+    private LocalDateTime timeStamp;
     private Transactions(){
 
     }
 
-    public Transactions(int transactionId, User user, Stock stock, BigDecimal amount, BigDecimal comission, Boolean transactionType, BigDecimal pricePerUnit, int quantity) {
+    public Transactions(int transactionId, User user, Stock stock, BigDecimal amount, BigDecimal comission, Boolean transactionType, BigDecimal pricePerUnit, int quantity, LocalDateTime timeStamp) {
         this.transactionId = transactionId;
         this.user = user;
         this.stock = stock;
@@ -40,6 +43,7 @@ public class Transactions {
         this.transactionType = transactionType;
         this.pricePerUnit = pricePerUnit;
         this.quantity = quantity;
+        this.timeStamp = timeStamp;
     }
 
     public int getTransactionId() {
@@ -104,5 +108,12 @@ public class Transactions {
 
     public void setUser(User user) {
         this.user = user;
+    }
+    public LocalDateTime getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(LocalDateTime timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }

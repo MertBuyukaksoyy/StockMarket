@@ -157,6 +157,24 @@ public class UserController {
         }
 
         model.addAttribute("message", message);
-        return "saleResult";    }
+        return "saleResult";
+    }
+    @GetMapping("/transactionHistory")
+    public String showTransactionHistory(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            String username = authentication.getName();
+            User user = userService.findByUsername(username);
+
+            List<Transactions> transactionsList = transactionService.getUserTransactions(user);
+            model.addAttribute("transactionsList", transactionsList);
+            model.addAttribute("username", username);
+        } else {
+            return "redirect:/error";
+        }
+
+        return "transactionHistory";
+    }
+
 
 }

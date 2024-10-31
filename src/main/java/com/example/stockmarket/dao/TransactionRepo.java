@@ -10,6 +10,4 @@ import java.util.Optional;
 
 public interface TransactionRepo extends JpaRepository <Transactions, Integer> {
     List<Transactions> findByUser(User user);
-    @Query("SELECT t FROM Transactions t ORDER BY t.transactionId DESC")
-    Optional<Transactions> findTopByOrderByTransaction();
 }
