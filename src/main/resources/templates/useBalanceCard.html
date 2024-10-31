@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Use Balance Card</title>
+</head>
+<body>
+<form action="#" th:action="@{/useBalanceCard}" method="post">
+  <label for="cardCode">Balance Card Kodu:</label>
+  <input type="text" id="cardCode" name="cardCode" required>
+
+  <label for="userName">Kullanıcı Adı:</label>
+  <input type="text" id="userName" name="userName" required>
+
+  <button type="submit">Kullan</button>
+</form>
+
+<div th:if="${message}">
+  <p th:text="${message}"></p>
+</div>
+
+</body>
+</html>

@@ -176,5 +176,27 @@ public class UserController {
         return "transactionHistory";
     }
 
+    @GetMapping("/useBalanceCard")
+    public String showUseBalanceCard(){
+        return "useBalanceCard";
+    }
+    @PostMapping("/useBalanceCard")
+    public String useBalanceCard(@RequestParam("cardCode") String cardCode,
+                                 @RequestParam("userName") String userName,
+                                 Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            String username = authentication.getName();
+            User user = userService.findByUsername(username);
+            boolean usedSuccessfully = balanceService.useBalanceCard(user, cardCode);
+            if (usedSuccessfully){
+                model.addAttribute("message", "Kart Başarıyla Kullanıldı");
+            }
+            else {
+                model.addAttribute("message", "Kart kullanım başarısız");
+            }
+        }
+        return "redirect:/home";
+    }
 
 }
