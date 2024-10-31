@@ -1,12 +1,11 @@
 package com.example.stockmarket.controller;
 
+import com.example.stockmarket.dao.BalanceCardRepo;
+import com.example.stockmarket.entity.BalanceCard;
 import com.example.stockmarket.entity.Balances;
 import com.example.stockmarket.entity.Stock;
 import com.example.stockmarket.entity.User;
-import com.example.stockmarket.services.BalanceService;
-import com.example.stockmarket.services.StockService;
-import com.example.stockmarket.services.TransactionService;
-import com.example.stockmarket.services.UserService;
+import com.example.stockmarket.services.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Controller
 public class AdminController {
@@ -29,6 +29,10 @@ public class AdminController {
         private StockService stockService;
         @Autowired
         private TransactionService transactionService;
+        @Autowired
+        private AdminService adminService;
+        @Autowired
+        private BalanceCardRepo balanceCardRepo;
 
         @GetMapping("/updateBalance/{userId}")
         public String showUpdateBalanceForm(@PathVariable int userId, Model model) {
@@ -76,6 +80,27 @@ public class AdminController {
             return "redirect:/users";
         }
 
+        @GetMapping("/balanceCards")
+        public String showBalanceCardList(Model model){
+            List<BalanceCard> balanceCards = balanceCardRepo.findAll();
+            model.addAttribute("balanceCards", balanceCards);
+            return "balanceCards";
+        }
+
+        @GetMapping("/addBalanceCard")
+        public String showBalanceCardForm(Model model){
+            List<BalanceCard> balanceCards = balanceCardRepo.findAll();
+            model.addAttribute("balanceCards", balanceCards);
+            return "addBalanceCard";
+        }
+
+        @PostMapping("addBalanceCard")
+        public String addBalanceCard(@RequestParam("cardCode") String cardCode,
+                                     @RequestParam("amount") BigDecimal amount,
+                                     Model model){
+            adminService.addBalanceCard(cardCode, amount);
+            return "redirect:/balanceCards";
+        }
 
 }
 

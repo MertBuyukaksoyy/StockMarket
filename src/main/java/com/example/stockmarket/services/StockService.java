@@ -97,4 +97,5 @@ public class StockService {
         stock.setStockQuantity(stock.getStockQuantity() + newQuantity);
         stockRepo.save(stock);
     }
+
 }

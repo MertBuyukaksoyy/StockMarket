@@ -34,6 +34,9 @@ public class TransactionService {
         BigDecimal comission = totalCost.multiply(commissionRate);
         BigDecimal finalCost = totalCost.add(comission);
 
+        if (!stock.getStockActive()){
+            throw new RuntimeException("Hisse Senedi Aktif Değil!");
+        }
 
         if (balanceService.getBalance(user).getAmount().compareTo(finalCost) >= 0) {
             Transactions transaction = new Transactions(0, user, stock, finalCost, comission, true, pricePerUnit, quantity, LocalDateTime.now());
@@ -51,6 +54,10 @@ public class TransactionService {
         Optional<Portfolio> optionalPortfolio = portfolioService.getUserPortfolio(user).stream()
                 .filter(p -> p.getStock() != null && p.getStock().equals(stock) && p.getQuantity() >= quantity)
                 .findFirst();
+
+        if (!stock.getStockActive()){
+            throw new RuntimeException("Hisse Senedi Aktif Değil!");
+        }
 
         if (optionalPortfolio.isEmpty()) {
             throw new RuntimeException("Yetersiz hisse miktarı veya geçersiz hisse.");

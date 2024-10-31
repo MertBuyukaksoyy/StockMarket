@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Balance Cards</title>
+</head>
+<body>
+<h1>Balance Cards</h1>
+<a th:href="@{/addBalanceCard}">Add Balance Card</a>
+<a th:href="@{/users}">User List</a>
+<table>
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Card Code</th>
+    <th>Amount</th>
+    <th>Used</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="balanceCard : ${balanceCards}"> <!-- balanceCards olarak güncellendi -->
+    <td th:text="${balanceCard.codeId}"></td>
+    <td th:text="${balanceCard.cardCode}"></td>
+    <td th:text="${balanceCard.amount}"></td>
+    <td th:text="${balanceCard.used}"></td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
