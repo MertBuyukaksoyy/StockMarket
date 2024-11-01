@@ -2,14 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>User List</title>
+    <title>Admin Panel</title>
 </head>
 <body>
 <h3>User List</h3>
-<a th:href="@{/addUser}">Add User</a>
-<a th:href="@{/balanceCards}">BalanceCards</a>
 <a href="/home">Home Page</a>
-<a href="/updateComissionRate">Change Commission</a>
+<a th:href="@{/admin/addUser}">Add User</a>
+<a th:href="@{/admin/balanceCards}">BalanceCards</a>
+<a href="/admin/updateComissionRate">Change Commission</a>
 <table>
   <thead>
   <tr>
@@ -33,12 +33,12 @@
     </td>
     <td th:text="${user.balances[0].amount}">0</td>
     <td>
-      <a th:href="@{/updateBalance/{userId}(userId=${user.user_id})}">
+      <a th:href="@{/admin/updateBalance/{userId}(userId=${user.user_id})}">
         Update Balance
       </a>
     </td>
     <td>
-      <a th:href="@{/deleteUser/{id}(id=${user.user_id})}"
+      <a th:href="@{/admin/deleteUser/{id}(id=${user.user_id})}"
          onclick="if (!(confirm('Are you sure you want to delete this employee?'))) return false">
         Delete</a>
     </td>

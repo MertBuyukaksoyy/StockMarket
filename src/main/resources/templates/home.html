@@ -17,7 +17,7 @@
     </form>
 </div>
 <div th:if="${#authorization.expression('hasRole(''admin'')')}">
-<a href="/users">User List</a>
+<a href="/admin/users">Admin Panel</a>
 </div>
 <p th:if="${balance != null}">
     Hoş geldiniz, <span th:text="${username}"></span>. Bakiyeniz: <span th:text="${balance}"></span>
@@ -56,7 +56,7 @@
             </td>
                 <div th:if="${#authorization.expression('hasRole(''admin'')')}">
             <td>
-                <a th:href="@{/updateStockStatus/{stockId}(stockId=${stock.stockId})}">Düzenle</a>
+                <a th:href="@{/admin/updateStockStatus/{stockId}(stockId=${stock.stockId})}">Düzenle</a>
             </td>
             </div>
         </tr>

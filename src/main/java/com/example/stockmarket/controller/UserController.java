@@ -76,33 +76,6 @@ public class UserController {
         userService.register(username, password);
         return "redirect:/login";
     }
-    @GetMapping("/addUser")
-    public String showAddUserForm(Model model) {
-        List<Role> roles = roleRepo.findAll();
-        model.addAttribute("roles", roles);
-        return "addUser";
-    }
-
-    @PostMapping("/addUser")
-    public String addUser(@RequestParam("username") String username,
-                          @RequestParam("password") String password,
-                          @RequestParam("role") String roleName,
-                          Model model) {
-        userService.addUser(username, password, roleName);
-        return "redirect:/users";
-    }
-    @GetMapping("/users")
-    public String showUserList(Model model){
-        List<User> users = userService.getAllUsers();
-        model.addAttribute("users", users);
-        return "users";
-    }
-    @GetMapping("/deleteUser/{id}")
-    public String deleteUser(@PathVariable int id) {
-        userService.deleteUser(id);
-        return "redirect:/users";
-    }
-
 
     @PostMapping("/authenticateUser")
     public String authenticate(@RequestParam("username") String username, @RequestParam("password") String password,

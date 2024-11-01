@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>Hisse Düzenle</h1>
-<form th:action="@{/updateStockStatus}" method="post">
+<form th:action="@{/admin/updateStockStatus}" method="post">
     <input type="hidden" th:name="stockId" th:value="${stock.stockId}"/>
 
     <label>Hisse Kodu: <span th:text="${stock.stockSymbol}"></span></label><br/>

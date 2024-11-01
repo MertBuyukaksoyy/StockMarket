@@ -1,23 +1,19 @@
 package com.example.stockmarket.controller;
 
 import com.example.stockmarket.dao.BalanceCardRepo;
-import com.example.stockmarket.entity.BalanceCard;
-import com.example.stockmarket.entity.Balances;
-import com.example.stockmarket.entity.Stock;
-import com.example.stockmarket.entity.User;
+import com.example.stockmarket.dao.RoleRepo;
+import com.example.stockmarket.entity.*;
 import com.example.stockmarket.services.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+@RequestMapping("/admin")
 @Controller
 public class AdminController {
 
@@ -33,6 +29,35 @@ public class AdminController {
         private AdminService adminService;
         @Autowired
         private BalanceCardRepo balanceCardRepo;
+        @Autowired
+        private RoleRepo roleRepo;
+
+    @GetMapping("/addUser")
+    public String showAddUserForm(Model model) {
+        List<Role> roles = roleRepo.findAll();
+        model.addAttribute("roles", roles);
+        return "addUser";
+    }
+
+    @PostMapping("/addUser")
+    public String addUser(@RequestParam("username") String username,
+                          @RequestParam("password") String password,
+                          @RequestParam("role") String roleName,
+                          Model model) {
+        userService.addUser(username, password, roleName);
+        return "redirect:/admin/users";
+    }
+    @GetMapping("/users")
+    public String showUserList(Model model){
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "users";
+    }
+    @GetMapping("/deleteUser/{id}")
+    public String deleteUser(@PathVariable int id) {
+        userService.deleteUser(id);
+        return "redirect:/admin/users";
+    }
 
         @GetMapping("/updateBalance/{userId}")
         public String showUpdateBalanceForm(@PathVariable int userId, Model model) {
@@ -47,7 +72,7 @@ public class AdminController {
         public String updateBalance(@RequestParam Integer userId, @RequestParam BigDecimal newAmount) {
             User user = userService.findById(userId);
             balanceService.updateBalance(user, newAmount);
-            return "redirect:/users";
+            return "redirect:/admin/users";
         }
 
         @GetMapping("/updateStockStatus/{stockId}")
@@ -77,7 +102,7 @@ public class AdminController {
         @Transactional
         public String updateComission(@RequestParam BigDecimal newRate){
             transactionService.setCommissionRate(newRate);
-            return "redirect:/users";
+            return "redirect:/admin/users";
         }
 
         @GetMapping("/balanceCards")
@@ -99,7 +124,7 @@ public class AdminController {
                                      @RequestParam("amount") BigDecimal amount,
                                      Model model){
             adminService.addBalanceCard(cardCode, amount);
-            return "redirect:/balanceCards";
+            return "redirect:/admin/balanceCards";
         }
 
 }
