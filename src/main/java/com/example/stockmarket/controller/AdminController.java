@@ -42,9 +42,10 @@ public class AdminController {
     @PostMapping("/addUser")
     public String addUser(@RequestParam("username") String username,
                           @RequestParam("password") String password,
+                          @RequestParam("email") String email,
                           @RequestParam("role") String roleName,
                           Model model) {
-        userService.addUser(username, password, roleName);
+        userService.addUser(username, password, email, roleName);
         return "redirect:/admin/users";
     }
     @GetMapping("/users")

@@ -8,7 +8,6 @@ import com.example.stockmarket.entity.Role;
 import com.example.stockmarket.entity.Transactions;
 import com.example.stockmarket.entity.User;
 import com.example.stockmarket.entity.UserRole;
-import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.*;
 import org.apache.poi.hssf.usermodel.*;
@@ -33,8 +32,8 @@ public class UserService {
     @Autowired
     private TransactionRepo transactionRepo;
 
-    public void register(String username, String password) {
-        User user = new User(username, password);
+    public void register(String username, String password, String email) {
+        User user = new User(username, password, email);
         userRepo.save(user);
         portfolioService.createPortfolio(user,null,0);
         balanceService.createBalance(user);
@@ -47,8 +46,8 @@ public class UserService {
         }
     }
 
-    public void addUser(String username, String password, String roleName){
-        User user = new User(username, password);
+    public void addUser(String username, String password, String email, String roleName){
+        User user = new User(username, password,email);
         userRepo.save(user);
         portfolioService.createPortfolio(user,null,0);
         balanceService.createBalance(user);
@@ -65,11 +64,7 @@ public class UserService {
     public boolean authenticateUser(String username, String rawPassword) {
         User user = userRepo.findByUsername(username).orElse(null);
         if (user != null) {
-            if (checkPassword(rawPassword, user.getPassword())) {
-                return true;
-            } else {
-                return false;
-            }
+            return checkPassword(rawPassword, user.getPassword());
         }
         return false;
     }

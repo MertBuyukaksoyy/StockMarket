@@ -16,14 +16,14 @@ public class User {
     private String username;
     @Column(name = "password")
     private String password;
+    @Column(name = "email")
+    private String email;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL )
     private Set<UserRole> userRoles;
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
     private Set<Portfolio> portfolios;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Balances> balances;
-    @OneToMany(mappedBy = "user", cascade =  CascadeType.ALL, orphanRemoval = true)
-    private Set<Transactions> transactions;
     public User(){
 
     }
@@ -36,9 +36,10 @@ public class User {
         this.userRoles = userRoles;
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, String email) {
         this.username = username;
         this.password= password;
+        this.email = email;
     }
 
     public int getUser_id() {
@@ -83,4 +84,11 @@ public class User {
         this.balances = balances;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

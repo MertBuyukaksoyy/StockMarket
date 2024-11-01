@@ -75,9 +75,11 @@ public class UserController {
         return "register";
     }
     @PostMapping("/register")
-    public String signInUser(@RequestParam ("username") String username
-            , @RequestParam("password") String password, Model model){
-        userService.register(username, password);
+    public String signInUser(@RequestParam ("username") String username,
+                             @RequestParam("password") String password,
+                             @RequestParam("email") String email,
+                             Model model){
+        userService.register(username, password, email);
         return "redirect:/login";
     }
 
@@ -159,7 +161,6 @@ public class UserController {
     }
     @PostMapping("/useBalanceCard")
     public String useBalanceCard(@RequestParam("cardCode") String cardCode,
-                                 @RequestParam("userName") String userName,
                                  Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
@@ -175,6 +176,7 @@ public class UserController {
         }
         return "redirect:/home";
     }
+
     @GetMapping("/downloadTransactionHistory")
     public void downloadTransactionHistory(HttpServletResponse response, Principal principal) throws Exception {
         User user = userService.findByUsername(principal.getName());

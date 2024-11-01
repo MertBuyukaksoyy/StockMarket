@@ -15,6 +15,7 @@
   <tr>
     <th>User Id</th>
     <th>Username</th>
+    <th>Mail</th>
     <th>Password</th>
     <th>Role</th>
     <th>Balance</th>
@@ -24,6 +25,7 @@
   <tr th:each="user : ${users}" >
     <td th:text="${user.user_id}"></td>
     <td th:text="${user.username}"></td>
+    <td th:text="${user.email != null ? user.email : 'Email bulunamadı!'}"></td>
     <td th:text="${user.password}"></td>
 
     <td>
