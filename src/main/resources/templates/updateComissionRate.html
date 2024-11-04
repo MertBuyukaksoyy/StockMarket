@@ -2,15 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Komisyon Oranı Güncelle</title>
+  <title>Update Comission Rate</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<h3>Komisyon Oranını Güncelle</h3>
-<form th:action="@{/admin/updateComissionRate}" method="POST">
-  <label for="commissionRate">Yeni Komisyon Oranı (ondalıklı olarak örnek: %50 = 0.5):</label>
-  <input type="number" step="0.01" id="commissionRate" name="newRate" th:value="${commissionRate}"/>
-  <button type="submit">Güncelle</button>
-</form>
-<a href="/admin/users">Geri Dön</a>
+<div class="container mt-5">
+  <h3>Update Comission Rate</h3>
+  <form th:action="@{/admin/updateComissionRate}" method="POST">
+    <div class="form-group">
+      <label for="commissionRate">New Comission Rate (Example : %50 = 0.5):</label>
+      <input type="number" class="form-control" step="0.01" id="commissionRate" name="newRate" th:value="${commissionRate}" required/>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+  <a class="btn btn-link" href="/admin/users">Go Back</a>
+</div>
 </body>
 </html>

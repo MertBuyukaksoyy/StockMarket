@@ -2,26 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Hisse Düzenle</title>
+    <title>Update Stock</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<h1>Hisse Düzenle</h1>
-<form th:action="@{/admin/updateStockStatus}" method="post">
-    <input type="hidden" th:name="stockId" th:value="${stock.stockId}"/>
+<div class="container mt-5">
+    <h1>Update Stock</h1>
+    <form th:action="@{/admin/updateStockStatus}" method="post">
+        <input type="hidden" th:name="stockId" th:value="${stock.stockId}"/>
 
-    <label>Hisse Kodu: <span th:text="${stock.stockSymbol}"></span></label><br/>
-    <label>Hisse Adı: <span th:text="${stock.stockName}"></span></label><br/>
+        <div class="form-group">
+            <label>Stock Symbol: <span th:text="${stock.stockSymbol}"></span></label><br/>
+            <label>Stock Name: <span th:text="${stock.stockName}"></span></label><br/>
+        </div>
 
-    <label>Durum:</label>
-    <select name="isActive">
-        <option th:value="true" th:text="'Aktif'" th:selected="${stock.stockActive}">Aktif</option>
-        <option th:value="false" th:text="'Pasif'" th:selected="${!stock.stockActive}">Pasif</option>
-    </select><br/>
+        <div class="form-group">
+            <label>Status:</label>
+            <select name="isActive" class="form-control">
+                <option th:value="true" th:text="'Aktif'" th:selected="${stock.stockActive}">Active</option>
+                <option th:value="false" th:text="'Pasif'" th:selected="${!stock.stockActive}">Passive</option>
+            </select>
+        </div>
 
-    <label>Adet:</label>
-    <input type="number" th:name="quantity" th:value="${stock.stockQuantity}" min="0"/><br/>
+        <div class="form-group">
+            <label>Quantity:</label>
+            <input type="number" class="form-control" th:name="quantity" th:value="${stock.stockQuantity}" min="0"/>
+        </div>
 
-    <button type="submit">Güncelle</button>
-</form>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
 </body>
 </html>

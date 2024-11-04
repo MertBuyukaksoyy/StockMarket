@@ -2,25 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Hisse Gecmisi</title>
+  <title>Stock History </title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<h1 th:text="${stock.stockName} + ' Hisse Geçmişi'"></h1>
-<table>
-  <thead>
-  <tr>
-    <th>Tarih</th>
-    <th>Fiyat</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="entry : ${history}">
-    <td th:text="${entry.timeStamp}"></td>
-    <td th:text="${entry.price}"></td>
-  </tr>
-  </tbody>
-
-</table>
-<a href="/home">Geri Dön</a>
+<div class="container mt-5">
+  <h1 th:text="${stock.stockName} + ' Hisse Geçmişi'"></h1>
+  <table class="table">
+    <thead class="thead-light">
+    <tr>
+      <th>Date</th>
+      <th>Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="entry : ${history}">
+      <td th:text="${entry.timeStamp}"></td>
+      <td th:text="${entry.price}"></td>
+    </tr>
+    </tbody>
+  </table>
+  <a class="btn btn-link" href="/home">Home Page</a>
+</div>
 </body>
 </html>

@@ -39,8 +39,8 @@ public class StockPriceTrackerService {
     public void sendWelcomeEmail(String to, String username) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
-        message.setSubject("Hoşgeldiniz!");
-        message.setText("Merhaba " + username + ",\n\nStock Market uygulamamıza hoş geldiniz!\n\nSaygılarımızla,\nStock Market Ekibi");
+        message.setSubject("Welcome!");
+        message.setText( username + ",\n\nWelcome to our Stock Market website!!\n\nWith Respects,\nStock Market Crew");
 
         javaMailSender.send(message);
     }
@@ -76,15 +76,15 @@ public class StockPriceTrackerService {
         if (stock != null) {
             return stock.getCurrentPrice();
         }
-        throw new RuntimeException("Hisse bulunamadı: " + stockSymbol);
+        throw new RuntimeException("Stock cannot be found " + stockSymbol);
     }
 
     private void sendEmail(String to, String stockName, BigDecimal currentPrice){
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
-        message.setSubject(stockName + " İçin Alarm");
-        message.setText("Şu anki" + stockName + "fiyatı = " + currentPrice);
+        message.setSubject("Alarm for " + stockName);
+        message.setText("Updated Price" + currentPrice);
         javaMailSender.send(message);
 
     }

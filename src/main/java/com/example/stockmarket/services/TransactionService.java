@@ -45,7 +45,7 @@ public class TransactionService {
             portfolioService.updatePortfolio(user, stock, quantity);
             stockService.updateStockQuantity(stock, -quantity);
         } else {
-            throw new RuntimeException("Yetersiz bakiye.");
+            throw new RuntimeException("Insufficient balance\n");
         }
     }
 
@@ -56,11 +56,11 @@ public class TransactionService {
                 .findFirst();
 
         if (!stock.getStockActive()){
-            throw new RuntimeException("Hisse Senedi Aktif Değil!");
+            throw new RuntimeException("Stock is not active!!!");
         }
 
         if (optionalPortfolio.isEmpty()) {
-            throw new RuntimeException("Yetersiz hisse miktarı veya geçersiz hisse.");
+            throw new RuntimeException("Insufficient stock quantity or unknown stock");
         }
 
         BigDecimal pricePerUnit = stock.getCurrentPrice();

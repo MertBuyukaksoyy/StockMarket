@@ -76,11 +76,11 @@ public class StockService {
         if (stock != null) {
             return stock.getCurrentPrice();
         }
-        throw new RuntimeException("Hisse bulunamadı: " + stockSymbol);
+        throw new RuntimeException("Stock cannot be found: " + stockSymbol);
     }
 
     public Stock findById(int id){
-        return stockRepo.findById(id).orElseThrow(() -> new RuntimeException("Hisse bulunamadı: " + id));
+        return stockRepo.findById(id).orElseThrow(() -> new RuntimeException("Stock cannot be found: " + id));
     }
 
     public Stock save(Stock stock) {

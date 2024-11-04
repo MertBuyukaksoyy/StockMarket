@@ -2,11 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Satış Sonucu</title>
+  <title>Sale Result </title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<h1>Satış İşlemi Sonucu</h1>
-<p th:text="${message}"></p>
-<a href="/portfolio">Portföyüme Dön</a>
+<div class="container mt-5">
+  <h1>Sale Result</h1>
+  <p th:text="${message}"></p>
+  <a class="btn btn-link" href="/portfolio">Go back to Portfolio</a>
+</div>
 </body>
 </html>

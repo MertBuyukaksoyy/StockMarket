@@ -3,29 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title>Balance Cards</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<h1>Balance Cards</h1>
-<a th:href="@{/admin/addBalanceCard}">Add Balance Card</a>
-<a th:href="@{/admin/users}">User List</a>
-<table>
-  <thead>
-  <tr>
-    <th>Id</th>
-    <th>Card Code</th>
-    <th>Amount</th>
-    <th>Used</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="balanceCard : ${balanceCards}"> <!-- balanceCards olarak güncellendi -->
-    <td th:text="${balanceCard.codeId}"></td>
-    <td th:text="${balanceCard.cardCode}"></td>
-    <td th:text="${balanceCard.amount}"></td>
-    <td th:text="${balanceCard.used}"></td>
-  </tr>
-  </tbody>
-</table>
-
+<div class="container mt-5">
+  <h1>Balance Cards</h1>
+  <div class="mb-3">
+    <a class="btn btn-success" th:href="@{/admin/addBalanceCard}">Add Balance Card</a>
+    <a class="btn btn-info" th:href="@{/admin/users}">User List</a>
+  </div>
+  <table class="table">
+    <thead class="thead-light">
+    <tr>
+      <th>Id</th>
+      <th>Card Code</th>
+      <th>Amount</th>
+      <th>Used</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="balanceCard : ${balanceCards}">
+      <td th:text="${balanceCard.codeId}"></td>
+      <td th:text="${balanceCard.cardCode}"></td>
+      <td th:text="${balanceCard.amount}"></td>
+      <td th:text="${balanceCard.used}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 </body>
 </html>

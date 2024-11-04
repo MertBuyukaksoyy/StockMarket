@@ -82,10 +82,10 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userRepo.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı: " + username));
+                .orElseThrow(() -> new RuntimeException("User cannot be found: " + username));
     }
     public User findById(int id) {
-        return userRepo.findById(id).orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı: " + id));
+        return userRepo.findById(id).orElseThrow(() -> new RuntimeException("User cannot be found: " + id));
     }
 
     public void generateExcel(HttpServletResponse response, User user) throws Exception {

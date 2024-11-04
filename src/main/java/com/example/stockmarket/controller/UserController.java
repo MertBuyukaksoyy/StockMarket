@@ -177,10 +177,10 @@ public class UserController {
             User user = userService.findByUsername(username);
             boolean usedSuccessfully = balanceService.useBalanceCard(user, cardCode);
             if (usedSuccessfully){
-                model.addAttribute("message", "Kart Başarıyla Kullanıldı");
+                model.addAttribute("message", "Card Used Successfully");
             }
             else {
-                model.addAttribute("message", "Kart kullanım başarısız");
+                model.addAttribute("message", "Card Usage Is not Successful");
             }
         }
         return "redirect:/home";
