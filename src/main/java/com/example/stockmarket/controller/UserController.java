@@ -1,6 +1,7 @@
 package com.example.stockmarket.controller;
 
 import com.example.stockmarket.dao.RoleRepo;
+import com.example.stockmarket.dao.StockRepo;
 import com.example.stockmarket.entity.*;
 import com.example.stockmarket.security.CustomUserService;
 import com.example.stockmarket.services.*;
@@ -8,8 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 
@@ -41,6 +42,10 @@ public class UserController {
     private StockService stockService;
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private StockPriceTrackerService stockPriceTrackerService;
+    @Autowired
+    private StockRepo stockRepo;
 
     @GetMapping("/home")
     public String showHomePage(Model model) {
@@ -80,6 +85,7 @@ public class UserController {
                              @RequestParam("email") String email,
                              Model model){
         userService.register(username, password, email);
+        stockPriceTrackerService.sendWelcomeEmail(email,username);
         return "redirect:/login";
     }
 
@@ -182,6 +188,24 @@ public class UserController {
         User user = userService.findByUsername(principal.getName());
         userService.generateExcel(response, user);
     }
+
+
+    @GetMapping("/createAlert")
+    public String showCreateAlert(){
+        return "createAlert";
+    }
+
+    @PostMapping("/createAlert")
+    public String createAlert(@RequestParam String stockSymbol, @RequestParam BigDecimal priceLimit,
+                              @RequestParam String alertType, Principal principal) {
+        String userName = principal.getName();
+        User user = userService.findByUsername(userName);
+        Stock stock = stockRepo.findByStockSymbol(stockSymbol);
+        stockPriceTrackerService.createAlert(user, stock, priceLimit, alertType);
+
+        return "redirect:/home";
+    }
+
 
 
 

@@ -31,6 +31,8 @@ public class AdminController {
         private BalanceCardRepo balanceCardRepo;
         @Autowired
         private RoleRepo roleRepo;
+        @Autowired
+        private StockPriceTrackerService stockPriceTrackerService;
 
     @GetMapping("/addUser")
     public String showAddUserForm(Model model) {
@@ -46,6 +48,7 @@ public class AdminController {
                           @RequestParam("role") String roleName,
                           Model model) {
         userService.addUser(username, password, email, roleName);
+        stockPriceTrackerService.sendWelcomeEmail(email,username);
         return "redirect:/admin/users";
     }
     @GetMapping("/users")

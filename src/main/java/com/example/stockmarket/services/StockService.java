@@ -71,6 +71,14 @@ public class StockService {
     public List<Stock> getAllStocks() {
         return stockRepo.findAll();
     }
+    public BigDecimal getCurrentStockPrice(String stockSymbol) {
+        Stock stock = stockRepo.findByStockSymbol(stockSymbol);
+        if (stock != null) {
+            return stock.getCurrentPrice();
+        }
+        throw new RuntimeException("Hisse bulunamadı: " + stockSymbol);
+    }
+
     public Stock findById(int id){
         return stockRepo.findById(id).orElseThrow(() -> new RuntimeException("Hisse bulunamadı: " + id));
     }
@@ -97,5 +105,7 @@ public class StockService {
         stock.setStockQuantity(stock.getStockQuantity() + newQuantity);
         stockRepo.save(stock);
     }
+
+
 
 }

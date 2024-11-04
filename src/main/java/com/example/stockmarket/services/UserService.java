@@ -12,6 +12,8 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +33,8 @@ public class UserService {
     private BalanceService balanceService;
     @Autowired
     private TransactionRepo transactionRepo;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     public void register(String username, String password, String email) {
         User user = new User(username, password, email);
@@ -124,5 +128,6 @@ public class UserService {
         workbook.close();
         ops.close();
     }
+
 
 }

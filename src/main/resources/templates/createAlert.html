@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emir Oluştur</title>
+</head>
+<body>
+
+<h2>Hisse Uyarı Oluştur</h2>
+<form th:action="@{/createAlert}" method="POST">
+    <div>
+        <label for="stockSymbol">Hisse Sembolü:</label>
+        <input type="text" id="stockSymbol" name="stockSymbol" required>
+    </div>
+
+    <div>
+        <label for="priceLimit">Fiyat Limiti:</label>
+        <input type="number" step="0.01" id="priceLimit" name="priceLimit" required>
+    </div>
+
+    <div>
+        <label for="alertType">Uyarı Tipi:</label>
+        <select id="alertType" name="alertType" required>
+            <option value="above">Yukarıda</option>
+            <option value="below">Aşağıda</option>
+        </select>
+    </div>
+
+    <button type="submit">Uyarı Oluştur</button>
+</form>
+
+<div>
+    <a th:href="@{/home}">Ana Sayfaya Dön</a>
+</div>
+
+</body>
+</html>
