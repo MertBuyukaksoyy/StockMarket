@@ -5,6 +5,7 @@ import com.example.stockmarket.dao.StockAlertsRepo;
 import com.example.stockmarket.dao.StockRepo;
 import com.example.stockmarket.dao.UserRepo;
 import com.example.stockmarket.entity.StockAlerts;
+import com.example.stockmarket.entity.Transactions;
 import com.example.stockmarket.entity.User;
 import com.example.stockmarket.entity.Stock;
 
@@ -39,13 +40,16 @@ public class StockPriceTrackerService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Hoşgeldiniz!");
-        message.setText("Merhaba " + username + ",\n\nStock Market uygulamamıza hoş geldiniz! Başarılar dileriz.\n\nSaygılarımızla,\nStock Market Ekibi");
+        message.setText("Merhaba " + username + ",\n\nStock Market uygulamamıza hoş geldiniz!\n\nSaygılarımızla,\nStock Market Ekibi");
 
         javaMailSender.send(message);
     }
 
-    public StockAlerts createAlert(User user,Stock stock, BigDecimal priceLimit, String alertType){
+    public StockAlerts createAlert(User user,Stock stock, BigDecimal priceLimit){
 
+
+        BigDecimal currentPrice = getCurrentStockPrice(stock.getStockSymbol());
+        String alertType = priceLimit.compareTo(currentPrice) < 0 ? "below" : "above";
         StockAlerts alert = new StockAlerts(priceLimit, alertType, LocalDateTime.now());
         alert.setUser(user);
         alert.setStock(stock);
@@ -84,6 +88,11 @@ public class StockPriceTrackerService {
         javaMailSender.send(message);
 
     }
+
+    public List<StockAlerts> getUserAlerts(User user) {
+        return  stockAlertsRepo.findByUser(user);
+    }
+
 
 
 }

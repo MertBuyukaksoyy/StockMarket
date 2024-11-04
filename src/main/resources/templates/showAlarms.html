@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>My Alerts</title>
+</head>
+<body>
+<h1>My Stock Alerts</h1>
+<table>
+  <thead>
+  <tr>
+    <th>Stock Name</th>
+    <th>Stock Symbol</th>
+    <th>Price Limit</th>
+    <th>Alert Type</th>
+    <th>Created At</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="alert : ${stockAlertsList}">
+    <td th:text="${alert.stock.stockName}"></td>
+    <td th:text="${alert.stock.stockSymbol}"></td>
+    <td th:text="${alert.priceLimit}"></td>
+    <td th:text="${alert.alertType}"></td>
+    <td th:text="${alert.timeStamp}"></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

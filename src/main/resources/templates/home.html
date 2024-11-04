@@ -10,7 +10,7 @@
 <a href="/login">Log in</a>
 <a href="/portfolio">Portfolyo</a>
 <a href="/useBalanceCard">Balance Card</a>
-<a href="/createAlert">Alarm oluştur</a>
+<a href="/showAlarms">Alarmlarım</a>
 <div>
     <p>Welcome, <span th:text="${username}"></span></p>
     <form th:action="@{/logout}" method="post">
@@ -58,7 +58,6 @@
                 <form th:action="@{/createAlert}" method="POST" style="display:inline;">
                     <input type="hidden" name="stockSymbol" th:value="${stock.stockSymbol}" />
                     <input type="number" step="0.01" name="priceLimit" placeholder="Fiyat Limiti" required>
-                    <input type="hidden" name="alertType" value="above" />
                     <button type="submit">Alarm Kur</button>
                 </form>
             </td>

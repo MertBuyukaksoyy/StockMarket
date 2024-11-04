@@ -1,6 +1,7 @@
 package com.example.stockmarket.controller;
 
 import com.example.stockmarket.dao.RoleRepo;
+import com.example.stockmarket.dao.StockAlertsRepo;
 import com.example.stockmarket.dao.StockRepo;
 import com.example.stockmarket.entity.*;
 import com.example.stockmarket.security.CustomUserService;
@@ -46,6 +47,8 @@ public class UserController {
     private StockPriceTrackerService stockPriceTrackerService;
     @Autowired
     private StockRepo stockRepo;
+    @Autowired
+    private StockAlertsRepo stockAlertsRepo;
 
     @GetMapping("/home")
     public String showHomePage(Model model) {
@@ -190,23 +193,33 @@ public class UserController {
     }
 
 
-    @GetMapping("/createAlert")
-    public String showCreateAlert(){
-        return "createAlert";
-    }
-
     @PostMapping("/createAlert")
     public String createAlert(@RequestParam String stockSymbol, @RequestParam BigDecimal priceLimit,
-                              @RequestParam String alertType, Principal principal) {
+                              Principal principal) {
         String userName = principal.getName();
         User user = userService.findByUsername(userName);
         Stock stock = stockRepo.findByStockSymbol(stockSymbol);
-        stockPriceTrackerService.createAlert(user, stock, priceLimit, alertType);
+        stockPriceTrackerService.createAlert(user, stock, priceLimit);
 
         return "redirect:/home";
     }
 
+    @GetMapping("/showAlarms")
+    public String showAlarms(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            String username = authentication.getName();
+            User user = userService.findByUsername(username);
 
+            List<StockAlerts> stockAlerts = stockPriceTrackerService.getUserAlerts(user);
+            model.addAttribute("stockAlertsList", stockAlerts);
+            model.addAttribute("username", username);
+
+        } else {
+            return "redirect:/error";
+        }
+        return "showAlarms";
+    }
 
 
 }
