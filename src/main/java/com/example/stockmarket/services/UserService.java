@@ -8,11 +8,11 @@ import com.example.stockmarket.entity.Role;
 import com.example.stockmarket.entity.Transactions;
 import com.example.stockmarket.entity.User;
 import com.example.stockmarket.entity.UserRole;
+import com.example.stockmarket.security.JwtUtil;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +35,8 @@ public class UserService {
     private TransactionRepo transactionRepo;
     @Autowired
     private JavaMailSender javaMailSender;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     public void register(String username, String password, String email) {
         User user = new User(username, password, email);
@@ -62,15 +64,12 @@ public class UserService {
         }
 
     }
-    public boolean checkPassword(String rawPassword, String storedPassword) {
-        return rawPassword.equals(storedPassword);
-    }
-    public boolean authenticateUser(String username, String rawPassword) {
+    public String authenticateUser(String username, String rawPassword) {
         User user = userRepo.findByUsername(username).orElse(null);
-        if (user != null) {
-            return checkPassword(rawPassword, user.getPassword());
+        if (user != null && user.getPassword().equals(rawPassword)) {
+            return jwtUtil.generateToken(username);
         }
-        return false;
+        return null;
     }
 
     public List<User> getAllUsers() {

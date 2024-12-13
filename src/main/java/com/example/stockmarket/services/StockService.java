@@ -16,6 +16,7 @@ import org.jsoup.nodes.Document;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,6 +36,9 @@ public class StockService {
                     .get();
 
             Elements stockContainers = doc.select("div.tableBox div.tBody.ui-unsortable ul.live-stock-item");
+            List<Stock> stockToUpdate = new ArrayList<>();
+            List<StockHistory> stockHistories = new ArrayList<>();
+
             for (Element container : stockContainers) {
                 String stockP = container.select("a:nth-of-type(2)").attr("href");
                 String stockData = stockP.replace("/borsa/hisse-fiyatlari","");
@@ -46,8 +50,20 @@ public class StockService {
 
                 Stock existingStock = stockRepo.findByStockSymbol(stockSymbol);
                 if(existingStock != null){
-                    updateStock(existingStock, stockPrice, stockName);
+                    existingStock.setCurrentPrice(stockPrice);
+                    existingStock.setStockName(stockName);
+                    stockToUpdate.add(existingStock);
+
+                    StockHistory history = new StockHistory();
+                    history.setStock(existingStock);
+                    history.setPrice(stockPrice);
+                    history.setTimeStamp(LocalDateTime.now());
+                    stockHistories.add(history);
+
+                    //saveStockHistory(existingStock);
+                    /*updateStock(existingStock, stockPrice, stockName);
                     saveStockHistory(existingStock);
+                    stockToUpdate.add(existingStock);*/
                 }
                 else {
                 Stock stock = new Stock();
@@ -61,7 +77,17 @@ public class StockService {
 
                // System.out.println( "İsim: "  + stockName + "Sembol:" + stockSymbol + ", Fiyat: " + stockPrice);
                 }
+
+            if (!stockToUpdate.isEmpty()){
+                for (Stock stock : stockToUpdate) {
+                    stockRepo.bulkUpdateStockPrice(stock.getStockSymbol(), stock.getCurrentPrice(), stock.getStockName());
+                }
+            }
+            if (!stockHistories.isEmpty()) {
+                stockHistoryRepo.saveAll(stockHistories); // Toplu kaydetme
+            }
         }
+
         catch (IOException e){
             e.printStackTrace();
         }
@@ -86,7 +112,7 @@ public class StockService {
     public Stock save(Stock stock) {
         return stockRepo.save(stock);
     }
-    @Transactional
+   /* @Transactional
     private void saveStockHistory(Stock existingStock) {
         StockHistory history = new StockHistory();
         history.setStock(existingStock);
@@ -99,7 +125,7 @@ public class StockService {
         existingStock.setCurrentPrice(stockPrice);
         existingStock.setStockName(stockName);
         stockRepo.save(existingStock);
-    }
+    }*/
 
     public void updateStockQuantity(Stock stock, int newQuantity) {
         stock.setStockQuantity(stock.getStockQuantity() + newQuantity);

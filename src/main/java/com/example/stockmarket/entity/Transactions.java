@@ -30,6 +30,8 @@ public class Transactions {
     private BigDecimal amount;
     @Column(name = "time_stamp")
     private LocalDateTime timeStamp;
+    @Column(name = "deleted")
+    private Boolean deleted = false;
     private Transactions(){
 
     }
@@ -115,5 +117,13 @@ public class Transactions {
 
     public void setTimeStamp(LocalDateTime timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public Boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

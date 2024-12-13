@@ -1,5 +1,6 @@
 package com.example.stockmarket.security;
 
+import jakarta.servlet.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,16 +13,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    public CustomUserService customUserService;
+    private final CustomUserService customUserService;
+    private final JwtUtil jwtUtil;
+    private final JwtFilter jwtFilter;
     @Autowired
-    public SecurityConfig(CustomUserService customUserService) {
+    public SecurityConfig(CustomUserService customUserService, JwtUtil jwtUtil, JwtFilter jwtFilter) {
         this.customUserService = customUserService;
+        this.jwtUtil = jwtUtil;
+        this.jwtFilter = jwtFilter;
     }
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -39,30 +45,21 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("admin")
                         .anyRequest().permitAll()
                 )
-
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .loginProcessingUrl("/authenticateUser")
-                        .defaultSuccessUrl("/home",true)
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )
-
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/home")
                         .permitAll()
                 )
-
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(true)
-                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(customUserService);
 
         return http.build();
-    }
 
 }
 
+}

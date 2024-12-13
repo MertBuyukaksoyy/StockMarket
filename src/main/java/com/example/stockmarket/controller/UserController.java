@@ -5,17 +5,15 @@ import com.example.stockmarket.dao.StockAlertsRepo;
 import com.example.stockmarket.dao.StockRepo;
 import com.example.stockmarket.entity.*;
 import com.example.stockmarket.security.CustomUserService;
+import com.example.stockmarket.security.JwtUtil;
 import com.example.stockmarket.services.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailSender;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -49,28 +47,94 @@ public class UserController {
     private StockRepo stockRepo;
     @Autowired
     private StockAlertsRepo stockAlertsRepo;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @GetMapping("/home")
-    public String showHomePage(Model model) {
-
+    public String showHomePage(HttpServletRequest request, Model model) {
+        String token = extractJwtFromRequest(request);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            model.addAttribute("username", userDetails.getUsername());
-            User user = userService.findByUsername(userDetails.getUsername());
-            Balances balance = balanceService.getBalance(user);
-            //Portfolio portfolio = portfolioService.getUserPortfolio();
-            model.addAttribute("balance", balance.getAmount());
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                System.out.println("Cookie Name: " + cookie.getName() + ", Value: " + cookie.getValue());
+            }
+        }
+
+        System.out.println("Extracted Token: " + token);
+
+        if (token != null && jwtUtil.validateToken(token, jwtUtil.extractUsername(token))) {
+            String username = jwtUtil.extractUsername(token);
+            model.addAttribute("username", username);
         } else {
             model.addAttribute("username", "Anonymous");
         }
+
+        if (authentication != null && token != null && jwtUtil.validateToken(token, jwtUtil.extractUsername(token))) {
+            String username = jwtUtil.extractUsername(token);
+            model.addAttribute("username", username);
+
+            User user = userService.findByUsername(username);
+            if (user != null) {
+                Balances balance = balanceService.getBalance(user);
+                model.addAttribute("balance", balance != null ? balance.getAmount() : 0.0);
+            }
+        } else {
+            model.addAttribute("username", "Anonymous");
+        }
+
         List<Stock> stocks = stockService.getAllStocks();
         model.addAttribute("stocks", stocks);
 
-
         return "home";
     }
+
+
+    @PostMapping("/authenticateUser")
+    public String authenticateUser(@RequestParam("username") String username, @RequestParam("password") String password,
+                               HttpServletResponse response) {
+        String token = userService.authenticateUser(username, password);
+
+        if (token != null) {
+            Cookie cookie = new Cookie("Authorization", token);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(false);
+            cookie.setPath("/");
+            cookie.setMaxAge(60*60*2);
+            response.addCookie(cookie);
+            return "redirect:/home";
+        } else {
+            return "redirect:/login?error=true";
+        }
+    }
+
+
+    private String extractJwtFromRequest(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("Authorization".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("Authorization", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return "redirect:/home";
+    }
+
+
+
 
 
     @GetMapping("/login")
@@ -92,25 +156,6 @@ public class UserController {
         return "redirect:/login";
     }
 
-    @PostMapping("/authenticateUser")
-    public String authenticate(@RequestParam("username") String username, @RequestParam("password") String password,
-                               HttpServletRequest request, Model model) {
-        boolean authenticated = userService.authenticateUser(username, password);
-
-        if (authenticated) {
-            UserDetails userDetails = customUserService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            Authentication authentication = authenticationManager.authenticate(authenticationToken);
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            HttpSession session = request.getSession(true);
-            session.setAttribute("SPRING_SECURITY_CONTEXT", authentication);
-            return "redirect:/home";
-        } else {
-            model.addAttribute("error", "Invalid username or password");
-            return "login";
-        }
-    }
 
     @GetMapping("/error")
     public String showLoginError(){
