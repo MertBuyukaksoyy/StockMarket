@@ -31,15 +31,15 @@ public class TransactionService {
     public void buyStock(User user, Stock stock, int quantity) {
         BigDecimal pricePerUnit = stock.getCurrentPrice();
         BigDecimal totalCost = pricePerUnit.multiply(new BigDecimal(quantity));
-        BigDecimal comission = totalCost.multiply(commissionRate);
-        BigDecimal finalCost = totalCost.add(comission);
+        BigDecimal commission = totalCost.multiply(commissionRate);
+        BigDecimal finalCost = totalCost.add(commission);
 
-        if (!stock.getStockActive()){
+        if (!stock.getStockActive()) {
             throw new RuntimeException("Hisse Senedi Aktif Değil!");
         }
 
         if (balanceService.getBalance(user).getAmount().compareTo(finalCost) >= 0) {
-            Transactions transaction = new Transactions(0, user, stock, finalCost, comission, true, pricePerUnit, quantity, LocalDateTime.now());
+            Transactions transaction = new Transactions(0, user, stock, finalCost, commission, true, pricePerUnit, quantity, LocalDateTime.now());
             transactionRepo.save(transaction);
             balanceService.updateBalance(user, balanceService.getBalance(user).getAmount().subtract(finalCost));
             portfolioService.updatePortfolio(user, stock, quantity);
@@ -55,7 +55,7 @@ public class TransactionService {
                 .filter(p -> p.getStock() != null && p.getStock().equals(stock) && p.getQuantity() >= quantity)
                 .findFirst();
 
-        if (!stock.getStockActive()){
+        if (!stock.getStockActive()) {
             throw new RuntimeException("Stock is not active!!!");
         }
 
@@ -65,16 +65,17 @@ public class TransactionService {
 
         BigDecimal pricePerUnit = stock.getCurrentPrice();
         BigDecimal totalProceeds = pricePerUnit.multiply(BigDecimal.valueOf(quantity));
-        BigDecimal comission = totalProceeds.multiply(commissionRate);
-        BigDecimal finalProceeds = totalProceeds.subtract(comission);
-        Transactions transaction = new Transactions(0, user, stock, finalProceeds, comission, false, pricePerUnit, quantity, LocalDateTime.now());
+        BigDecimal commission = totalProceeds.multiply(commissionRate);
+        BigDecimal finalProceeds = totalProceeds.subtract(commission);
+        Transactions transaction = new Transactions(0, user, stock, finalProceeds, commission, false, pricePerUnit, quantity, LocalDateTime.now());
 
         transactionRepo.save(transaction);
         balanceService.updateBalance(user, balanceService.getBalance(user).getAmount().add(finalProceeds));
         portfolioService.updatePortfolio(user, stock, -quantity);
         stockService.updateStockQuantity(stock, quantity);
     }
-    public BigDecimal getComissionRate(){
+
+    public BigDecimal getCommissionRate() {
         return commissionRate;
     }
 
@@ -82,8 +83,7 @@ public class TransactionService {
         this.commissionRate = newRate;
     }
 
-
     public List<Transactions> getUserTransactions(User user) {
-        return  transactionRepo.findByUser(user);
+        return transactionRepo.findByUser(user);
     }
 }

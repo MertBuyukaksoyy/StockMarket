@@ -98,7 +98,7 @@ public class AdminController {
 
         @GetMapping("/updateComissionRate")
         public String showUpdateComission(Model model){
-            model.addAttribute("comissionRate", transactionService.getComissionRate());
+            model.addAttribute("comissionRate", transactionService.getCommissionRate());
             return "updateComissionRate";
         }
 

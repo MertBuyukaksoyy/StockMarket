@@ -5,7 +5,6 @@ import com.example.stockmarket.dao.StockAlertsRepo;
 import com.example.stockmarket.dao.StockRepo;
 import com.example.stockmarket.dao.UserRepo;
 import com.example.stockmarket.entity.StockAlerts;
-import com.example.stockmarket.entity.Transactions;
 import com.example.stockmarket.entity.User;
 import com.example.stockmarket.entity.Stock;
 
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

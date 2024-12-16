@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PortfolioService {
@@ -16,8 +17,9 @@ public class PortfolioService {
     private PortfolioRepo portfolioRepo;
 
     public List<Portfolio> getUserPortfolio(User user) {
-        return portfolioRepo.findByUser(user);
+        return portfolioRepo.findActiveByUser(user); // Only return active portfolios
     }
+
     public void createPortfolio(User user, Stock stock, int quantity) {
         Portfolio portfolio = new Portfolio(user, stock, quantity);
         portfolioRepo.save(portfolio);
@@ -31,17 +33,34 @@ public class PortfolioService {
 
     @Transactional
     public void updatePortfolio(User user, Stock stock, int quantity) {
-        Portfolio portfolio = portfolioRepo.findByUserAndStock(user, stock)
-                .filter(p -> !p.isDeleted())
-                .orElse(new Portfolio(user, stock, 0));
+        Optional<Portfolio> existingPortfolio = portfolioRepo.findByUserAndStockAndDeletedFalse(user, stock);
 
-        int newQuantity = portfolio.getQuantity() + quantity;
-        portfolio.setQuantity(newQuantity);
+        Portfolio portfolio;
+        if (existingPortfolio.isPresent()) {
+            portfolio = existingPortfolio.get();
+            int newQuantity = portfolio.getQuantity() + quantity;
 
-        if (newQuantity <= 0) {
-            deletePortfolio(portfolio); // Soft delete
+            if (newQuantity == 0) {
+                deletePortfolio(portfolio); // Soft delete
+            } else {
+                portfolio.setQuantity(newQuantity);
+                portfolioRepo.save(portfolio);
+            }
         } else {
-            portfolioRepo.save(portfolio);
+            Optional<Portfolio> deletedPortfolio = portfolioRepo.findByUserAndStock(user, stock)
+                    .filter(Portfolio::isDeleted);
+
+            if (deletedPortfolio.isPresent()) {
+                portfolio = deletedPortfolio.get();
+                portfolio.setDeleted(false);
+                portfolio.setQuantity(quantity);
+                portfolioRepo.save(portfolio);
+            } else if (quantity > 0) {
+                portfolio = new Portfolio(user, stock, quantity);
+                portfolioRepo.save(portfolio);
+            }
         }
     }
+
+
 }
