@@ -40,7 +40,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(configurer -> configurer
                         .requestMatchers("/admin/**").hasRole("admin")
-                        .anyRequest().permitAll()
+                        .requestMatchers("/swagger-ui/**", "/login", "/register", "/authenticateUser","/error","/sse/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")

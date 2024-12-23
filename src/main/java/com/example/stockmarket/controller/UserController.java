@@ -7,16 +7,17 @@ import com.example.stockmarket.entity.*;
 import com.example.stockmarket.security.CustomUserService;
 import com.example.stockmarket.security.JwtUtil;
 import com.example.stockmarket.services.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +54,8 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Operation(summary = "Show Home Page", description = "Returns home page with user details and stock list")
+    @ApiResponse(responseCode = "200", description = "Successfully Displayed")
     @GetMapping("/home")
     public String showHomePage(HttpServletRequest request, Model model) {
         String token = extractJwtFromRequest(request);
@@ -93,10 +96,13 @@ public class UserController {
         return "home";
     }
 
-
+    @Operation(summary = "Authenticate User", description = "Authenticate user and create JWT")
+    @ApiResponse(responseCode = "302", description = "Redirects to Home page upon successful authentication ")
+    @ApiResponse(responseCode = "302", description = "Redirects to login page upon failed authentication ")
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/authenticateUser")
-    public String authenticateUser(@RequestParam("username") String username, @RequestParam("password") String password,
-                               HttpServletResponse response) {
+    public String authenticateUser(String username, @RequestParam("password") String password,
+                                   HttpServletResponse response) {
         String token = userService.authenticateUser(username, password);
 
         if (token != null) {
@@ -112,7 +118,6 @@ public class UserController {
         }
     }
 
-
     private String extractJwtFromRequest(HttpServletRequest request) {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
@@ -124,7 +129,8 @@ public class UserController {
         return null;
     }
 
-
+    @Operation(summary = "Login Form", description = "Display Login Page")
+    @ApiResponse(responseCode = "200", description = "Successfully displayed login form")
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";
@@ -134,6 +140,9 @@ public class UserController {
     public String showSignInForm(){
         return "register";
     }
+
+    @Operation(summary = "Register User ", description = "Register a new user and send welcome email")
+    @ApiResponse(responseCode = "302", description = "Redirects login page upon successful registration")
     @PostMapping("/register")
     public String signInUser(@RequestParam ("username") String username,
                              @RequestParam("password") String password,
@@ -144,12 +153,17 @@ public class UserController {
         return "redirect:/login";
     }
 
-
     @GetMapping("/error")
     public String showLoginError(){
         return "error";
     }
 
+    @Operation(summary = "Buy stock", description = "Allow user to buy stocks")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully buys stock"),
+            @ApiResponse(responseCode = "400", description = "Failed to buy stock")
+    })
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/buy/{id}")
     public String buyStock(@RequestParam int stockId, @RequestParam int quantity, @RequestParam String userName, Model model){
         User user = userService.findByUsername(userName);
@@ -165,6 +179,13 @@ public class UserController {
         model.addAttribute("message", message);
         return "purchaseResult";
     }
+
+    @Operation(summary = "Sell stock", description = "Allow user to sell stocks")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully sold stock"),
+            @ApiResponse(responseCode = "400", description = "Failed to sell stock")
+    })
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/sell/{id}")
     public String sellStock(@RequestParam int stockId, @RequestParam int quantity, @RequestParam String userName, Model model){
         User user = userService.findByUsername(userName);
@@ -180,6 +201,13 @@ public class UserController {
         model.addAttribute("message", message);
         return "saleResult";
     }
+
+    @Operation(summary = "Show Transaction History of User", description = "Display the transaction history of user that logged in ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully displayed transaction history."),
+            @ApiResponse(responseCode = "302", description = "Redirects to error page if user is not authenticated.")
+    })
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/transactionHistory")
     public String showTransactionHistory(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -201,6 +229,7 @@ public class UserController {
     public String showUseBalanceCard(){
         return "useBalanceCard";
     }
+
     @PostMapping("/useBalanceCard")
     public String useBalanceCard(@RequestParam("cardCode") String cardCode,
                                  Model model) {
@@ -224,7 +253,6 @@ public class UserController {
         User user = userService.findByUsername(principal.getName());
         userService.generateExcel(response, user);
     }
-
 
     @PostMapping("/createAlert")
     public String createAlert(@RequestParam String stockSymbol, @RequestParam BigDecimal priceLimit,
@@ -253,6 +281,5 @@ public class UserController {
         }
         return "showAlarms";
     }
-
 
 }

@@ -24,6 +24,9 @@ public class User {
     private Set<Portfolio> portfolios;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Balances> balances;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Transactions>transactions;
+
     public User(){
 
     }

@@ -9,7 +9,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "com.example.stockmarket")
 @EnableScheduling
 public class StockmarketApplication implements CommandLineRunner {
 	@Autowired

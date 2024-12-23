@@ -41,12 +41,12 @@
         </thead>
         <tbody>
         <th:block th:each="stock : ${stocks}">
-            <tr>
+            <tr th:id="${stock.stockSymbol}">
                 <td th:text="${stock.stockSymbol}"></td>
                 <td th:text="${stock.stockName}"></td>
-                <td th:text="${stock.currentPrice}"></td>
+                <td class="currentPrice" th:text="${stock.currentPrice}"></td>
                 <td th:text="${stock.stockQuantity}"></td>
-                <td th:text="${stock.stockActive ? 'Aktif' : 'Pasif'}"></td>
+                <td th:text="${stock.stockActive ? 'Active' : 'Passive'}"></td>
                 <td>
                     <form th:action="@{/buy/{id}(id=${stock.stockId})}" method="POST" style="display:inline;">
                         <input type="hidden" name="stockId" th:value="${stock.stockId}" />
@@ -60,15 +60,53 @@
                         <button type="submit" class="btn btn-warning btn-sm">Alarm Kur</button>
                     </form>
                     <a class="btn btn-info btn-sm" th:href="@{/history/{id}(id=${stock.stockId})}">Price History</a>
-
                     <div th:if="${#authorization.expression('hasRole(''admin'')')}">
                         <a class="btn btn-secondary btn-sm" th:href="@{/admin/updateStockStatus/{stockId}(stockId=${stock.stockId})}">Düzenle</a>
                     </div>
                 </td>
             </tr>
+
         </th:block>
         </tbody>
     </table>
 </div>
+
+<script>
+    if (!window.eventSource) {
+        window.eventSource = new EventSource('/sse/connect');
+    }
+
+    const eventSource = window.eventSource;
+
+    eventSource.addEventListener('stockUpdate', function(event) {
+        const data = JSON.parse(event.data);
+        console.log("Stock updated:", data);
+
+        const stockSymbol = data.stockSymbol.trim().toLowerCase();
+        console.log(`Looking for stock row with ID: ${stockSymbol}`);
+
+        const stockRow = document.getElementById(`${stockSymbol}`);
+        if (stockRow) {
+            console.log(`Stock row found for Symbol: ${stockSymbol}`);
+            stockRow.querySelector('.currentPrice').textContent = data.currentPrice; // Fiyatı güncelle
+        } else {
+            console.warn(`Stock row not found for Symbol: ${stockSymbol}`);
+        }
+    });
+
+
+
+    eventSource.onerror = function() {
+        console.error("SSE connection error. Retrying in 5 seconds...");
+        setTimeout(function() {
+            window.eventSource = new EventSource('/sse/connect');
+        }, 5000);
+    };
+
+    console.log("SSE connection state:", eventSource.readyState);
+
+</script>
+
+
 </body>
 </html>

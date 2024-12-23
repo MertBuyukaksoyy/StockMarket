@@ -25,9 +25,11 @@ public class StockService {
     private StockRepo stockRepo;
     @Autowired
     private StockHistoryRepo stockHistoryRepo;
+    @Autowired
+    private SseService sseService;
 
     @Transactional
-    @Scheduled(fixedRate = 90000)
+    @Scheduled(fixedRate = 45000)
     public void fetchStocks(){
         try {
             Document doc = Jsoup.connect("https://bigpara.hurriyet.com.tr/borsa/canli-borsa/")
@@ -43,8 +45,11 @@ public class StockService {
                 String stockP = container.select("a:nth-of-type(2)").attr("href");
                 String stockData = stockP.replace("/borsa/hisse-fiyatlari","");
                 String[] parts = stockData.split("-");
-                String stockSymbol = parts[0];
+                String stockSymbol = parts[0].replace("/","");
                 String stockName = String.join("-", java.util.Arrays.copyOfRange(parts,1, parts.length));
+                stockName = stockName.replace("detay/", "");
+                stockName = stockName.replace("-","");
+                stockName = stockName.trim();
                 String stockPriceStr = container.select("li[id^=h_td_fiyat_id_]").text();
                 BigDecimal stockPrice = new BigDecimal(stockPriceStr.replace(".", "").replace(",", "."));
 
@@ -60,10 +65,7 @@ public class StockService {
                     history.setTimeStamp(LocalDateTime.now());
                     stockHistories.add(history);
 
-                    //saveStockHistory(existingStock);
-                    /*updateStock(existingStock, stockPrice, stockName);
-                    saveStockHistory(existingStock);
-                    stockToUpdate.add(existingStock);*/
+                    sseService.sendEvent("stockUpdate", existingStock);
                 }
                 else {
                 Stock stock = new Stock();
@@ -112,26 +114,9 @@ public class StockService {
     public Stock save(Stock stock) {
         return stockRepo.save(stock);
     }
-   /* @Transactional
-    private void saveStockHistory(Stock existingStock) {
-        StockHistory history = new StockHistory();
-        history.setStock(existingStock);
-        history.setPrice(existingStock.getCurrentPrice());
-        history.setTimeStamp(LocalDateTime.now());
-        stockHistoryRepo.save(history);
-    }
-    @Transactional
-    public void updateStock(Stock existingStock, BigDecimal stockPrice, String stockName) {
-        existingStock.setCurrentPrice(stockPrice);
-        existingStock.setStockName(stockName);
-        stockRepo.save(existingStock);
-    }*/
 
     public void updateStockQuantity(Stock stock, int newQuantity) {
         stock.setStockQuantity(stock.getStockQuantity() + newQuantity);
         stockRepo.save(stock);
     }
-
-
-
 }
