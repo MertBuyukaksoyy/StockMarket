@@ -3,6 +3,8 @@ package com.example.stockmarket.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "balance_card")
@@ -17,15 +19,18 @@ public class BalanceCard {
     private BigDecimal amount;
     @Column(name = "used")
     private Boolean used;
+    @Column(name = "createdAt")
+    private LocalDateTime createdAt;
 
     public BalanceCard(){
 
     }
 
-    public BalanceCard(String cardCode, BigDecimal amount, Boolean used) {
+    public BalanceCard(String cardCode, BigDecimal amount, Boolean used, LocalDateTime createdAt ) {
         this.cardCode = cardCode;
         this.amount = amount;
         this.used = used;
+        this.createdAt = createdAt;
     }
 
     public int getCodeId() {
@@ -58,5 +63,13 @@ public class BalanceCard {
 
     public void setUsed(Boolean used) {
         this.used = used;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

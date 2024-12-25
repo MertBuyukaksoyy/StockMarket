@@ -80,14 +80,11 @@
 
     eventSource.addEventListener('stockUpdate', function(event) {
         const data = JSON.parse(event.data);
-        console.log("Stock updated:", data);
 
         const stockSymbol = data.stockSymbol.trim().toLowerCase();
-        console.log(`Looking for stock row with ID: ${stockSymbol}`);
 
         const stockRow = document.getElementById(`${stockSymbol}`);
         if (stockRow) {
-            console.log(`Stock row found for Symbol: ${stockSymbol}`);
             stockRow.querySelector('.currentPrice').textContent = data.currentPrice; // Fiyatı güncelle
         } else {
             console.warn(`Stock row not found for Symbol: ${stockSymbol}`);
@@ -102,11 +99,36 @@
             window.eventSource = new EventSource('/sse/connect');
         }, 5000);
     };
-
-    console.log("SSE connection state:", eventSource.readyState);
-
 </script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.0/stomp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+
+<script>
+    debugger
+    var socket = new SockJS('/ws');
+    var stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+
+        stompClient.subscribe('/topic/notifications', function (notification) {
+            const message = notification.body;
+            console.log("Notification: " + message);
+
+            // Bildirimi bir popup olarak göster
+            alert(message);
+        });
+
+
+    }, function (error) {
+        console.error("WebSocket error:", error);
+        setTimeout(function () {
+            window.location.reload();
+        }, 5000);
+    });
+
+</script>
 
 </body>
 </html>

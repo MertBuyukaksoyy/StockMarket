@@ -1,21 +1,23 @@
 package com.example.stockmarket.services;
 
+import com.example.stockmarket.controller.NotificationController;
 import com.example.stockmarket.dao.RoleRepo;
 import com.example.stockmarket.dao.TransactionRepo;
 import com.example.stockmarket.dao.UserRepo;
 import com.example.stockmarket.dao.UserRoleRepo;
-import com.example.stockmarket.entity.Role;
-import com.example.stockmarket.entity.Transactions;
-import com.example.stockmarket.entity.User;
-import com.example.stockmarket.entity.UserRole;
+import com.example.stockmarket.entity.*;
 import com.example.stockmarket.security.JwtUtil;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,9 +39,15 @@ public class UserService {
     private JavaMailSender javaMailSender;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private AdminService adminService;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private NotificationController notificationController;
 
     public void register(String username, String password, String email) {
-        User user = new User(username, password, email);
+        User user = new User(username, password, email, LocalDateTime.now());
         userRepo.save(user);
         portfolioService.createPortfolio(user,null,0);
         balanceService.createBalance(user);
@@ -53,7 +61,7 @@ public class UserService {
     }
 
     public void addUser(String username, String password, String email, String roleName){
-        User user = new User(username, password,email);
+        User user = new User(username, password,email, LocalDateTime.now());
         userRepo.save(user);
         portfolioService.createPortfolio(user,null,0);
         balanceService.createBalance(user);
@@ -67,6 +75,15 @@ public class UserService {
     public String authenticateUser(String username, String rawPassword) {
         User user = userRepo.findByUsername(username).orElse(null);
         if (user != null && user.getPassword().equals(rawPassword)) {
+            LocalDateTime lastLoginTime = user.getLastLoginTime();
+            if(lastLoginTime != null) {
+                List<BalanceCard> newCards = adminService.getNewBalanceCardsSince(lastLoginTime);
+                for (BalanceCard card : newCards) {
+                    notificationController.sendNotificationNew(username, "New Balance Card Added: " + card.getCardCode());
+                }
+            }
+            user.setLastLoginTime(LocalDateTime.now());
+            userRepo.save(user);
             return jwtUtil.generateToken(username);
         }
         return null;

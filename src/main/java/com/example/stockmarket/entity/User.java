@@ -2,6 +2,8 @@ package com.example.stockmarket.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -18,6 +20,8 @@ public class User {
     private String password;
     @Column(name = "email")
     private String email;
+    @Column(name="last_login_time")
+    private LocalDateTime lastLoginTime;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL )
     private Set<UserRole> userRoles;
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
@@ -39,10 +43,11 @@ public class User {
         this.userRoles = userRoles;
     }
 
-    public User(String username, String password, String email) {
+    public User(String username, String password, String email, LocalDateTime lastLoginTime) {
         this.username = username;
         this.password= password;
         this.email = email;
+        this.lastLoginTime = lastLoginTime;
     }
 
     public int getUser_id() {
@@ -93,5 +98,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public LocalDateTime getLastLoginTime() {
+        return lastLoginTime;
+    }
+
+    public void setLastLoginTime(LocalDateTime lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
     }
 }

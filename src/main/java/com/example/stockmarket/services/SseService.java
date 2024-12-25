@@ -30,7 +30,6 @@ public class SseService {
     public void sendEvent(String eventName, Object data) {
         try {
             String jsonData = objectMapper.writeValueAsString(data);
-            System.out.println("SSE Event: " + eventName + ", Data: " + jsonData);
 
             for (SseEmitter emitter : emitters) {
                 emitter.send(SseEmitter.event().name(eventName).data(jsonData));

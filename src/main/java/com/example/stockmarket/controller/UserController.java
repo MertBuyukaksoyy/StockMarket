@@ -15,6 +15,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -53,6 +55,8 @@ public class UserController {
     private StockAlertsRepo stockAlertsRepo;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @Operation(summary = "Show Home Page", description = "Returns home page with user details and stock list")
     @ApiResponse(responseCode = "200", description = "Successfully Displayed")
@@ -70,13 +74,6 @@ public class UserController {
 
         System.out.println("Extracted Token: " + token);
 
-        if (token != null && jwtUtil.validateToken(token, jwtUtil.extractUsername(token))) {
-            String username = jwtUtil.extractUsername(token);
-            model.addAttribute("username", username);
-        } else {
-            model.addAttribute("username", "Anonymous");
-        }
-
         if (authentication != null && token != null && jwtUtil.validateToken(token, jwtUtil.extractUsername(token))) {
             String username = jwtUtil.extractUsername(token);
             model.addAttribute("username", username);
@@ -92,7 +89,6 @@ public class UserController {
 
         List<Stock> stocks = stockService.getAllStocks();
         model.addAttribute("stocks", stocks);
-
         return "home";
     }
 
@@ -104,7 +100,6 @@ public class UserController {
     public String authenticateUser(String username, @RequestParam("password") String password,
                                    HttpServletResponse response) {
         String token = userService.authenticateUser(username, password);
-
         if (token != null) {
             Cookie cookie = new Cookie("Authorization", token);
             cookie.setHttpOnly(true);
