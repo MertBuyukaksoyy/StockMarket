@@ -1,6 +1,7 @@
 package com.example.stockmarket.services;
 
 import com.example.stockmarket.dao.BalanceCardRepo;
+import com.example.stockmarket.dao.UserRepo;
 import com.example.stockmarket.entity.BalanceCard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -17,6 +18,13 @@ public class AdminService {
     private BalanceCardRepo balanceCardRepo;
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private UserRepo userRepo;
+
+
+    public void deleteUser(int id){
+        userRepo.deleteById(id);
+    }
 
     public void addBalanceCard(String cardCode, BigDecimal amount){
 

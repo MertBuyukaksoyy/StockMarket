@@ -88,12 +88,8 @@ public class UserService {
         }
         return null;
     }
-
     public List<User> getAllUsers() {
         return userRepo.findAll();
-    }
-    public void deleteUser(int id){
-        userRepo.deleteById(id);
     }
 
     public User findByUsername(String username) {
