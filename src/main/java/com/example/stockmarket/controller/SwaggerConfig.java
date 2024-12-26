@@ -10,12 +10,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition
-@SecurityScheme(name = "Authorization",type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT")
+@SecurityScheme(name = "Bearer Authentication",type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
 public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI(){
         return new OpenAPI()
+                //.addSecurityItem(new SecurityRequirement().addList("Bearer"))
+               // .components(new Components().addSecuritySchemes("Bearer" , SecuritySchemeType.APIKEY ))
                 .info(new Info()
                         .title("Stock Market API")
                         .version("1.0")

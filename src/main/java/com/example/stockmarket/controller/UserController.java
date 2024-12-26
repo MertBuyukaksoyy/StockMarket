@@ -95,7 +95,6 @@ public class UserController {
     @Operation(summary = "Authenticate User", description = "Authenticate user and create JWT")
     @ApiResponse(responseCode = "302", description = "Redirects to Home page upon successful authentication ")
     @ApiResponse(responseCode = "302", description = "Redirects to login page upon failed authentication ")
-    @SecurityRequirement(name = "Authorization")
     @PostMapping("/authenticateUser")
     public String authenticateUser(String username, @RequestParam("password") String password,
                                    HttpServletResponse response) {
@@ -158,7 +157,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Successfully buys stock"),
             @ApiResponse(responseCode = "400", description = "Failed to buy stock")
     })
-    @SecurityRequirement(name = "Authorization")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/buy/{id}")
     public String buyStock(@RequestParam int stockId, @RequestParam int quantity, @RequestParam String userName, Model model){
         User user = userService.findByUsername(userName);
@@ -180,7 +179,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Successfully sold stock"),
             @ApiResponse(responseCode = "400", description = "Failed to sell stock")
     })
-    @SecurityRequirement(name = "Authorization")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/sell/{id}")
     public String sellStock(@RequestParam int stockId, @RequestParam int quantity, @RequestParam String userName, Model model){
         User user = userService.findByUsername(userName);

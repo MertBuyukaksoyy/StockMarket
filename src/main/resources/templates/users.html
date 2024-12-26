@@ -21,6 +21,7 @@
       <th>Username</th>
       <th>Mail</th>
       <th>Password</th>
+      <th>Last Login Time</th>
       <th>Role</th>
       <th>Balance</th>
       <th>Actions</th>
@@ -30,8 +31,9 @@
     <tr th:each="user : ${users}">
       <td th:text="${user.user_id}"></td>
       <td th:text="${user.username}"></td>
-      <td th:text="${user.email != null ? user.email : 'Email bulunamadı!'}"></td>
+      <td th:text="${user.email != null ? user.email : 'Email not found!'}"></td>
       <td th:text="${user.password}"></td>
+      <td th:text="${user.lastLoginTime != null ? user.lastLoginTime : 'No Last Login Time'}"></td>
       <td>
         <ul class="list-unstyled">
           <li th:each="userRole : ${user.userRoles}" th:text="${userRole.role.roleName}"></li>
