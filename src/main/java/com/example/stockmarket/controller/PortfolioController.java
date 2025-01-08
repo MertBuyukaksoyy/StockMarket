@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,17 @@ public class PortfolioController {
 
             List<Portfolio> portfolioList = portfolioService.getUserPortfolio(user)
                     .stream().filter(portfolio -> !portfolio.isDeleted()).collect(Collectors.toList());
+
+            portfolioList.forEach(portfolio -> {
+                if (portfolio.getStock() != null && portfolio.getCost() != null) {
+                    BigDecimal currentPrice = portfolio.getStock().getCurrentPrice();
+                    portfolio.setProfit(portfolioService.calculateProfit(currentPrice, portfolio.getCost(), portfolio.getQuantity()));
+                }
+                else {
+                    portfolio.setProfit(BigDecimal.ZERO);
+                }
+            });
+
             model.addAttribute("portfolioList", portfolioList);
             model.addAttribute("username", username);
         } else {

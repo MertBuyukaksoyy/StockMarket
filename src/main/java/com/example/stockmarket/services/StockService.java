@@ -99,14 +99,6 @@ public class StockService {
     public List<Stock> getAllStocks() {
         return stockRepo.findAll();
     }
-    public BigDecimal getCurrentStockPrice(String stockSymbol) {
-        Stock stock = stockRepo.findByStockSymbol(stockSymbol);
-        if (stock != null) {
-            return stock.getCurrentPrice();
-        }
-        throw new RuntimeException("Stock cannot be found: " + stockSymbol);
-    }
-
     public Stock findById(int id){
         return stockRepo.findById(id).orElseThrow(() -> new RuntimeException("Stock cannot be found: " + id));
     }

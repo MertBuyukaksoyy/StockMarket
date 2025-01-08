@@ -16,22 +16,34 @@
       <th>Stock Name</th>
       <th>Price</th>
       <th>Amount</th>
-      <th>Transactions</th>
+      <th>Total Cost</th>
+      <th>Profit</th>
+      <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="portfolio : ${portfolioList}">
-      <td th:text="${portfolio.stock != null ? portfolio.stock.stockSymbol : 'Hisse kodu bulunamadı'}"></td>
-      <td th:text="${portfolio.stock != null ? portfolio.stock.stockName : 'Hisse Adı Bulunamadı'}"></td>
-      <td th:text="${portfolio.stock != null ? portfolio.stock.currentPrice : 'Hisse Fiyatı Bulunamadı'}"></td>
+      <td th:text="${portfolio.stock != null ? portfolio.stock.stockSymbol : 'Stock Code Not Found !'}"></td>
+      <td th:text="${portfolio.stock != null ? portfolio.stock.stockName : 'Stock Name Not Found !'}"></td>
+      <td th:text="${portfolio.stock != null ? portfolio.stock.currentPrice : 'Stock Price Not Found !'}"></td>
       <td th:text="${portfolio.quantity}"></td>
+      <td th:text="${portfolio.cost != null ? portfolio.cost : 'No Cost Value'}"></td>
+      <td th:if="${portfolio.profit != null}"
+          th:text="${portfolio.profit}"
+          th:classappend="${portfolio.profit.signum() < 0 ? 'text-danger' : 'text-success'}">
+      </td>
+      <td th:if="${portfolio.profit == null}">
+        No Data
+      </td>
+
+
       <td>
         <div th:if="${portfolio.stock != null}">
           <form th:action="@{/sell/{id}(id=${portfolio.stock.stockId})}" method="POST" style="display:inline;">
             <input type="hidden" name="stockId" th:value="${portfolio.stock.stockId}" />
-            <input type="number" name="quantity" placeholder="Adet" required>
+            <input type="number" name="quantity" placeholder="Quantity" required>
             <input type="hidden" name="userName" th:value="${username}">
-            <button type="submit" class="btn btn-danger btn-sm">Sat</button>
+            <button type="submit" class="btn btn-danger btn-sm">Sell</button>
           </form>
         </div>
         <div th:if="${portfolio.stock == null}">

@@ -30,7 +30,7 @@ public class TransactionService {
     @Transactional
     public void buyStock(User user, Stock stock, int quantity) {
         BigDecimal pricePerUnit = stock.getCurrentPrice();
-        BigDecimal totalCost = pricePerUnit.multiply(new BigDecimal(quantity));
+        BigDecimal totalCost = pricePerUnit.multiply(BigDecimal.valueOf(quantity));
         BigDecimal commission = totalCost.multiply(commissionRate);
         BigDecimal finalCost = totalCost.add(commission);
 
@@ -42,7 +42,7 @@ public class TransactionService {
             Transactions transaction = new Transactions(0, user, stock, finalCost, commission, true, pricePerUnit, quantity, LocalDateTime.now());
             transactionRepo.save(transaction);
             balanceService.updateBalance(user, balanceService.getBalance(user).getAmount().subtract(finalCost));
-            portfolioService.updatePortfolio(user, stock, quantity);
+            portfolioService.updatePortfolio(user, stock, quantity, totalCost);
             stockService.updateStockQuantity(stock, -quantity);
         } else {
             throw new RuntimeException("Insufficient balance\n");
@@ -71,7 +71,7 @@ public class TransactionService {
 
         transactionRepo.save(transaction);
         balanceService.updateBalance(user, balanceService.getBalance(user).getAmount().add(finalProceeds));
-        portfolioService.updatePortfolio(user, stock, -quantity);
+        portfolioService.updatePortfolio(user, stock, -quantity, BigDecimal.ZERO);
         stockService.updateStockQuantity(stock, quantity);
     }
 

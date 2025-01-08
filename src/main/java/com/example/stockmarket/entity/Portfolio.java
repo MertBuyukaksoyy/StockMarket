@@ -2,6 +2,8 @@ package com.example.stockmarket.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "portfolio")
 public class Portfolio {
@@ -19,7 +21,11 @@ public class Portfolio {
     private int quantity;
     @Column(name = "deleted")
     private boolean deleted = false;
-    private Portfolio(){
+    @Column(name = "cost")
+    private BigDecimal cost;
+    @Transient
+    private BigDecimal profit;
+    public Portfolio(){
 
     }
 
@@ -27,6 +33,7 @@ public class Portfolio {
         this.user = user;
         this.stock = stock;
         this.quantity = quantity;
+
     }
 
     public int getPortfolioId() {
@@ -67,5 +74,21 @@ public class Portfolio {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
+    public BigDecimal getProfit() {
+        return profit;
+    }
+
+    public void setProfit(BigDecimal profit) {
+        this.profit = profit;
     }
 }
