@@ -29,7 +29,7 @@ public class StockService {
     private SseService sseService;
 
     @Transactional
-    @Scheduled(fixedRate = 45000)
+    @Scheduled(fixedRate = 60000)
     public void fetchStocks(){
         try {
             Document doc = Jsoup.connect("https://bigpara.hurriyet.com.tr/borsa/canli-borsa/")

@@ -70,6 +70,7 @@ public class UserService {
         }
 
     }
+
     public String authenticateUser(String username, String rawPassword) {
         User user = userRepo.findByUsername(username).orElse(null);
         if (user != null && user.getPassword().equals(rawPassword)) {

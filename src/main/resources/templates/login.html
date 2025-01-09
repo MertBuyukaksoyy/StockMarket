@@ -13,20 +13,45 @@
 <body>
 <div class="container mt-5">
     <h1>Sign In</h1>
-    <form action="#" th:action="@{/authenticateUser}" method="POST">
+    <form id="loginForm">
         <div th:if="${error}">
             <i class="failed">You entered invalid username/password.</i>
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="username" name="username" required>
+            <input type="text" class="form-control" id="username" placeholder="username" name="username" required>
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" placeholder="password" name="password" required>
+            <input type="password" class="form-control" id="password" placeholder="password" name="password" required>
         </div>
         <a href="/home">Home Page</a>
         <br><br>
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="button" class="btn btn-primary" onclick="submitForm()">Login</button>
     </form>
+    <script>
+        function submitForm() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/authenticateUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: username, password: password }),
+            })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else if (!response.ok) {
+                        throw new Error('Login failed');
+                    }
+                })
+                .catch(error => {
+                    alert('Invalid username or password.');
+                });
+        }
+
+    </script>
 </div>
 </body>
 </html>

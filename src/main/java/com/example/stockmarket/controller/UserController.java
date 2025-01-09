@@ -15,6 +15,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -24,6 +26,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -93,12 +96,10 @@ public class UserController {
     }
 
     @Operation(summary = "Authenticate User", description = "Authenticate user and create JWT")
-    @ApiResponse(responseCode = "302", description = "Redirects to Home page upon successful authentication ")
-    @ApiResponse(responseCode = "302", description = "Redirects to login page upon failed authentication ")
     @PostMapping("/authenticateUser")
-    public String authenticateUser(String username, @RequestParam("password") String password,
+    public ResponseEntity<Void> authenticateUser(@RequestBody AuthRequest authRequest,
                                    HttpServletResponse response) {
-        String token = userService.authenticateUser(username, password);
+        String token = userService.authenticateUser(authRequest.getUsername(), authRequest.getPassword());
         if (token != null) {
             Cookie cookie = new Cookie("Authorization", token);
             cookie.setHttpOnly(true);
@@ -106,10 +107,9 @@ public class UserController {
             cookie.setPath("/");
             cookie.setMaxAge(60*60*2);
             response.addCookie(cookie);
-            return "redirect:/home";
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/home")).build();
         } else {
-            return "redirect:/login?error=true";
-        }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();        }
     }
 
     private String extractJwtFromRequest(HttpServletRequest request) {
