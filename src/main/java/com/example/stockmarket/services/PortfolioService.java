@@ -3,7 +3,6 @@ package com.example.stockmarket.services;
 import com.example.stockmarket.dao.PortfolioRepo;
 import com.example.stockmarket.dao.TransactionRepo;
 import com.example.stockmarket.entity.Portfolio;
-import com.example.stockmarket.entity.Transactions;
 import com.example.stockmarket.entity.User;
 import com.example.stockmarket.entity.Stock;
 import jakarta.transaction.Transactional;
